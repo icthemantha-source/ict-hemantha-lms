@@ -1,0 +1,1572 @@
+PROJECT: ICT HEMANTHA — PROFESSIONAL LMS WEBSITE
+
+Act as a Senior Full-Stack Developer, UI/UX Designer, and LMS Software Architect.
+
+Build a complete, modern, professional, fully responsive Learning Management System (LMS) website for the following educational academy.
+
+1. PROJECT INFORMATION
+
+Academy Name: Hemantha Wanninayake B.Sc - ICT Academy
+Website Project: ICT Hemantha LMS
+Instructor: Hemantha Wanninayake B.Sc
+Subject: Information and Communication Technology (ICT)
+Target Grades: Grade 6, Grade 7, Grade 8, Grade 9, Grade 10, Grade 11
+WhatsApp: 0772735518
+Location: https://maps.app.goo.gl/QdtHZKfNFxx9B57LA?g_st=aw
+
+2. DESIGN REFERENCES
+
+Use the provided screenshots as the primary UI/UX design references.
+
+Create a premium educational website inspired by the screenshots:
+
+Clean white navigation header.
+
+Professional academy logo on the left.
+
+Academy name beside the logo.
+
+Navigation menu on the right.
+
+Orange primary CTA buttons.
+
+Navy blue educational branding.
+
+Light blue and white background sections.
+
+Modern course cards with rounded corners.
+
+Subtle shadows and clean spacing.
+
+Professional student learning interface.
+
+Brand Colors
+
+Primary Navy: #0B1F4A
+
+Secondary Blue: #2563A6
+
+Primary Orange: #F58220
+
+Light Blue: #EAF3FC
+
+Background: #F5F7FA
+
+White: #FFFFFF
+
+Text: #172033
+
+Use orange for primary actions and navy blue for headings, navigation, and dashboard branding.
+
+3. TECHNOLOGY STACK
+
+Build using:
+
+React
+
+TypeScript
+
+Vite
+
+Tailwind CSS
+
+Modern responsive components
+
+Lucide React icons
+
+Supabase Authentication
+
+Supabase PostgreSQL Database
+
+Supabase Storage
+
+Supabase Row Level Security (RLS)
+
+Use reusable components and maintain clean, professional code architecture.
+
+Do not build the website as a static HTML mockup. Create a functional application with proper routing, authentication architecture, database integration, and interactive components.
+
+4. WEBSITE HEADER
+
+Create a responsive navigation header.
+
+Left Side
+
+Academy logo.
+
+Hemantha Wanninayake B.Sc - ICT Academy.
+
+Navigation
+
+Home
+
+Grade 6
+
+Grade 7
+
+Grade 8
+
+Grade 9
+
+Grade 10
+
+Grade 11
+
+Login
+
+Requirements
+
+Sticky header.
+
+Responsive mobile navigation.
+
+Orange Login button.
+
+Dropdown navigation for grade courses if appropriate.
+
+Professional logo placement.
+
+Mobile-friendly menu.
+
+5. HOMEPAGE HERO SECTION
+
+Create a premium educational hero section.
+
+Main Sinhala Heading
+
+"ICT පන්ති - 6 සිට 11 ශ්‍රේණි දක්වා"
+
+English Heading
+
+"Hemantha Wanninayake B.Sc ICT LMS"
+
+Description
+
+"Interactive lessons, quizzes, past papers & video tutorials for O/L ICT. Learn anytime, anywhere — at your own pace."
+
+Sinhala Description
+
+"6 සිට 11 ශ්‍රේණිය දක්වා ICT ඉගෙනුම් කටයුතු සඳහා Online Learning Platform එක."
+
+Hero Buttons
+
+Start Learning - කරමින් ඉගෙනීම ආරම්භ කරන්න
+
+View Curriculum - පාඨමාලා බලන්න
+
+Hero Feature Badges
+
+Live Classes
+
+Quizzes & Past Papers
+
+Certificate on Completion
+
+Hero Image
+
+Use a premium educational photograph showing a Sri Lankan school-age student learning ICT using a laptop.
+
+Image must be professional, realistic, and appropriate for an educational website.
+
+Use a modern split-layout hero design with text on the left and image on the right.
+
+6. GRADE COURSE SECTION
+
+Create a section titled:
+
+"Choose Your Grade · ශ්‍රේණිය තෝරන්න"
+
+Subtitle:
+
+"Select your grade to access lessons, exercises, and learning resources designed for each grade."
+
+Create six course cards.
+
+Grade 6
+
+Course: Fundamentals of ICT
+Description: Basic computers, safety, typing, simple applications.
+Example Lessons: 12
+
+Grade 7
+
+Course: Digital Tools & Documents
+Description: Word, Excel, presentations, internet safety.
+Example Lessons: 14
+
+Grade 8
+
+Course: Internet & Communication
+Description: Email, research, online safety, collaboration.
+Example Lessons: 13
+
+Grade 9
+
+Course: ICT Fundamentals & Programming Basics
+Description: Computer fundamentals, logic, Scratch, problem-solving.
+Example Lessons: 15
+
+Grade 10
+
+Course: Data & Multimedia
+Description: Graphics, data, multimedia editing.
+Example Lessons: 16
+
+Grade 11
+
+Course: O/L Exam Preparation
+Description: Past papers, mock tests, revision guides.
+Example Lessons: 20
+
+Important:
+
+Do not duplicate grade cards unnecessarily.
+
+Each grade must have its own dedicated course page.
+
+Course lesson counts must be editable through the admin dashboard.
+
+Course content must come from the database.
+
+Clicking a grade card should open its corresponding grade page.
+
+7. COURSE DETAIL PAGE
+
+Each grade must have a professional dedicated course page.
+
+Include:
+
+Grade name.
+
+Course description.
+
+Teacher information.
+
+Course syllabus.
+
+Chapter list.
+
+Lesson list.
+
+Recorded video lessons.
+
+PDF lesson notes.
+
+Downloadable resources.
+
+Interactive quizzes.
+
+Past papers.
+
+Assignments.
+
+Student progress.
+
+Course enrollment.
+
+Payment or enrollment status.
+
+Only enrolled students should access protected course content.
+
+8. STUDENT AUTHENTICATION
+
+Create a complete student authentication system.
+
+Student Login
+
+Email and password.
+
+Password visibility toggle.
+
+Forgot password.
+
+Reset password.
+
+Secure logout.
+
+Session management.
+
+Student Registration
+
+Full name.
+
+Email address.
+
+Mobile number.
+
+Student ID.
+
+School name.
+
+Grade selection.
+
+Password.
+
+Use Supabase Authentication.
+
+Create a student profile after successful registration.
+
+Do not allow students to access other students' profiles or data.
+
+9. STUDENT DASHBOARD
+
+Create a professional student dashboard.
+
+Dashboard Overview
+
+Welcome message.
+
+Student profile.
+
+Enrolled courses.
+
+Course progress.
+
+Recent lessons.
+
+Upcoming exams.
+
+Assignment deadlines.
+
+Attendance summary.
+
+Payment status.
+
+Notifications.
+
+Sidebar Navigation
+
+Dashboard
+
+My Courses
+
+Recorded Lessons
+
+Live Classes
+
+Exams
+
+Results
+
+Attendance
+
+Progress Reports
+
+Payments
+
+Certificates
+
+Profile
+
+Logout
+
+Use modern dashboard cards, progress bars, charts, and responsive navigation.
+
+10. RECORDED LESSONS
+
+Create a recorded lesson management and learning system.
+
+Features:
+
+Video lesson player.
+
+Lesson title and description.
+
+Chapter navigation.
+
+Video progress tracking.
+
+Resume from last watched position.
+
+Mark lesson as completed.
+
+Lesson notes.
+
+Downloadable PDFs.
+
+Related quizzes.
+
+Store video metadata in Supabase.
+
+Use Supabase Storage for appropriate uploaded resources.
+
+Video files can also be hosted using an external video hosting service.
+
+Do not expose private video URLs or restricted resources to unauthorized students.
+
+11. LIVE CLASSES
+
+Create a live class section.
+
+Features:
+
+Upcoming live classes.
+
+Class date and time.
+
+Grade information.
+
+Meeting link.
+
+Class notifications.
+
+Join Live Class button.
+
+Past class recordings.
+
+Only enrolled students should access relevant class links.
+
+12. ONLINE PAYMENTS
+
+Create a professional online payment system for course enrollment.
+
+Payment Features
+
+Course fee display.
+
+Payment history.
+
+Pending payments.
+
+Successful payments.
+
+Failed payments.
+
+Payment receipts.
+
+Enrollment activation after verified payment.
+
+Use a payment gateway integration suitable for Sri Lanka, such as PayHere.
+
+Important:
+
+Never store card details directly.
+
+Verify payments server-side.
+
+Use secure payment callbacks/webhooks.
+
+Do not activate enrollment based only on frontend confirmation.
+
+Keep payment secrets in secure server environment variables.
+
+If payment gateway credentials are unavailable, create a clearly labeled payment integration placeholder and admin-verifiable payment workflow.
+
+13. EXAMS & RESULTS
+
+Create an online examination system.
+
+Exam Features
+
+Multiple-choice questions.
+
+True/False questions.
+
+Question navigation.
+
+Timer.
+
+Auto-submit when time expires.
+
+Automatic MCQ marking.
+
+Exam attempt history.
+
+Score calculation.
+
+Result display.
+
+Teacher-created exams.
+
+Grade-specific exams.
+
+Results
+
+Student marks.
+
+Total marks.
+
+Percentage.
+
+Grade.
+
+Exam date.
+
+Feedback.
+
+Performance history.
+
+Students can view only their own results.
+
+14. ATTENDANCE MANAGEMENT
+
+Create attendance management functionality.
+
+Features:
+
+Student attendance records.
+
+Live class attendance.
+
+Attendance date.
+
+Present / Absent status.
+
+Attendance percentage.
+
+Attendance history.
+
+Teacher attendance management.
+
+Teachers and admins can manage attendance.
+
+Students can view only their own attendance records.
+
+15. STUDENT PROGRESS REPORTS
+
+Create a student learning progress system.
+
+Display:
+
+Overall learning progress.
+
+Course completion percentage.
+
+Completed lessons.
+
+Remaining lessons.
+
+Quiz performance.
+
+Exam performance.
+
+Attendance percentage.
+
+Learning activity.
+
+Progress charts.
+
+Create a downloadable PDF progress report where practical.
+
+16. ADMIN DASHBOARD
+
+Create a powerful professional admin dashboard.
+
+Admin Overview
+
+Total students.
+
+Total courses.
+
+Total lessons.
+
+Total enrollments.
+
+Total payments.
+
+Pending payments.
+
+Upcoming classes.
+
+Exam statistics.
+
+Admin Management
+
+Student management.
+
+Course management.
+
+Grade management.
+
+Lesson management.
+
+Video management.
+
+PDF resource management.
+
+Live class management.
+
+Exam creation.
+
+Question bank management.
+
+Result management.
+
+Attendance management.
+
+Payment management.
+
+Certificate management.
+
+Notifications.
+
+Website content management.
+
+Admin Actions
+
+Add student.
+
+Edit student.
+
+Disable student.
+
+Create course.
+
+Edit course.
+
+Delete course.
+
+Upload lessons.
+
+Create exams.
+
+Publish results.
+
+Record attendance.
+
+Verify payments.
+
+Generate reports.
+
+Use role-based access control.
+
+Admin dashboard must not be accessible to normal students.
+
+17. TEACHER DASHBOARD
+
+Create a teacher dashboard if teacher role is supported.
+
+Features:
+
+Assigned courses.
+
+Student lists.
+
+Lesson uploads.
+
+Exam creation.
+
+Exam marking.
+
+Attendance management.
+
+Results publishing.
+
+Student progress monitoring.
+
+Teachers should only manage their assigned courses and students according to their permissions.
+
+18. SUPABASE DATABASE STRUCTURE
+
+Design a proper relational database.
+
+Create appropriate tables such as:
+
+profiles
+
+grades
+
+courses
+
+course_enrollments
+
+chapters
+
+lessons
+
+lesson_resources
+
+lesson_progress
+
+live_classes
+
+attendance
+
+exams
+
+exam_questions
+
+exam_attempts
+
+exam_answers
+
+results
+
+payments
+
+assignments
+
+assignment_submissions
+
+certificates
+
+notifications
+
+Include:
+
+Primary keys.
+
+Foreign keys.
+
+Timestamps.
+
+Proper indexes.
+
+Data validation.
+
+Role-based permissions.
+
+Supabase Row Level Security policies.
+
+Provide SQL migrations or SQL scripts for the database.
+
+Do not expose sensitive student information.
+
+19. SECURITY REQUIREMENTS
+
+Security is a priority.
+
+Implement:
+
+Supabase Authentication.
+
+Role-based access control.
+
+Row Level Security.
+
+Protected routes.
+
+Secure database queries.
+
+Server-side payment verification.
+
+Input validation.
+
+Secure file access.
+
+Student data protection.
+
+Roles:
+
+Admin
+
+Teacher
+
+Student
+
+Never trust frontend-only role checks.
+
+Never expose Supabase service-role keys in frontend code.
+
+20. MULTILINGUAL WEBSITE
+
+Create a language switcher.
+
+Languages:
+
+English
+
+Sinhala
+
+Support:
+
+Sinhala headings.
+
+Sinhala course descriptions.
+
+English interface.
+
+Sinhala student dashboard labels.
+
+Sinhala notifications where appropriate.
+
+Use Unicode-compatible fonts.
+
+Recommended fonts:
+
+Inter for English.
+
+Noto Sans Sinhala for Sinhala.
+
+21. FOOTER
+
+Create a professional footer.
+
+Include:
+
+Hemantha Wanninayake B.Sc - ICT Academy
+
+Navigation:
+
+Home
+
+Courses
+
+About
+
+Contact
+
+Privacy Policy
+
+Terms & Conditions
+
+Contact:
+
+WhatsApp: 0772735518
+
+Google Maps: https://maps.app.goo.gl/QdtHZKfNFxx9B57LA?g_st=aw
+
+Copyright:
+"© 2026 Hemantha Wanninayake B.Sc - ICT Academy. All Rights Reserved."
+
+22. CONTACT & WHATSAPP
+
+Add a floating WhatsApp button.
+
+WhatsApp number:
+0772735518
+
+Use the WhatsApp click-to-chat link:
+
+https://wa.me/94772735518
+
+Include:
+
+Contact page.
+
+Contact form.
+
+Academy location.
+
+Google Maps link.
+
+WhatsApp inquiry button.
+
+23. RESPONSIVE DESIGN
+
+Make the entire website fully responsive.
+
+Desktop:
+
+Professional wide layout.
+
+Multi-column course cards.
+
+Sidebar dashboards.
+
+Tablet:
+
+Adaptive navigation.
+
+Responsive course grid.
+
+Mobile:
+
+Mobile-first layout.
+
+Collapsible menu.
+
+One-column course cards.
+
+Touch-friendly buttons.
+
+Responsive dashboard sidebar.
+
+Readable Sinhala text.
+
+Optimized video player.
+
+Ensure there is no horizontal overflow.
+
+24. SEO & PERFORMANCE
+
+Implement:
+
+SEO-friendly page titles.
+
+Meta descriptions.
+
+Open Graph metadata.
+
+Semantic HTML.
+
+Accessible forms.
+
+Image optimization.
+
+Lazy loading.
+
+Fast loading.
+
+Sitemap-ready routing.
+
+Proper heading hierarchy.
+
+Homepage SEO Title:
+
+ICT Hemantha | Grade 6–11 ICT Online Learning LMS
+
+Meta Description:
+
+Learn ICT online with Hemantha Wanninayake B.Sc ICT Academy. Access recorded lessons, quizzes, past papers, online exams and learning resources for Grades 6–11.
+
+25. WEBSITE ROUTES
+
+Create the following routes:
+
+/
+/grade/6
+/grade/7
+/grade/8
+/grade/9
+/grade/10
+/grade/11
+/login
+/register
+/forgot-password
+/dashboard
+/dashboard/courses
+/dashboard/lessons
+/dashboard/exams
+/dashboard/results
+/dashboard/attendance
+/dashboard/progress
+/dashboard/payments
+/dashboard/profile
+/admin
+/admin/students
+/admin/courses
+/admin/lessons
+/admin/exams
+/admin/results
+/admin/attendance
+/admin/payments
+/teacher
+
+Protect authenticated routes and implement role-based access.
+
+26. UI/UX QUALITY
+
+The final website must look like a premium professional education platform.
+
+Avoid:
+
+Basic template appearance.
+
+Excessive gradients.
+
+Unnecessary animations.
+
+Overcrowded sections.
+
+Generic dashboard design.
+
+Fake functional buttons.
+
+Broken navigation.
+
+Placeholder text throughout the website.
+
+Use:
+
+Modern cards.
+
+Professional typography.
+
+Consistent spacing.
+
+Subtle animations.
+
+Clean icons.
+
+Realistic education visuals.
+
+Clear user journeys.
+
+Excellent mobile usability.
+
+27. DEVELOPMENT INSTRUCTIONS
+
+First build the complete frontend with realistic demo content.
+
+Then implement Supabase integration and authentication.
+
+Then implement database-driven courses and student dashboards.
+
+Then implement protected LMS features.
+
+If Supabase credentials are unavailable:
+
+Build the frontend.
+
+Prepare Supabase integration.
+
+Create database SQL scripts.
+
+Clearly identify features requiring backend configuration.
+
+Do not falsely claim that backend features are working.
+
+Generate complete source code.
+
+Use a clean project structure with reusable components.
+
+Provide:
+
+Main application.
+
+All page components.
+
+Shared UI components.
+
+Routing.
+
+Supabase client configuration.
+
+Authentication logic.
+
+Database SQL.
+
+RLS policies.
+
+Environment variable example.
+
+README setup instructions.
+
+Do not stop after generating the homepage.
+
+Build the entire ICT Hemantha LMS application progressively, maintaining consistent design and functionality across every page.
+
+FINAL OBJECTIVE:
+
+Deliver a professional, premium, responsive ICT education LMS website for Hemantha Wanninayake B.Sc - ICT Academy, serving Grade 6–11 students in Sri Lanka, with a complete student learning experience, course management, recorded lessons, online payments, exams, results, attendance, progress reports, and admin dashboard.
+
+28. ADVANCED STUDENT MANAGEMENT & ACADEMY FEATURES
+
+Extend the ICT Hemantha LMS with the following advanced academy management features. Integrate everything into the existing application, Supabase database, authentication system, and admin dashboard.
+
+A. GRADE-WISE MESSAGING SYSTEM
+
+Create a professional announcement and messaging system.
+
+Features:
+
+Send announcements separately to Grade 6, Grade 7, Grade 8, Grade 9, Grade 10, and Grade 11 students.
+
+Admin and teachers can select a specific grade.
+
+Send announcements to all students in a selected grade.
+
+Send messages to individual students.
+
+Send messages to all enrolled students.
+
+Announcement title and message content.
+
+Sinhala and English messages.
+
+Message attachments including PDF documents and images.
+
+Important announcement notifications.
+
+Read and unread message status.
+
+Message history.
+
+Scheduled announcements if supported.
+
+Students can view only announcements relevant to their grade and account.
+
+B. QUESTION PAPER MANAGEMENT
+
+Create a complete question paper distribution system.
+
+Features:
+
+Upload question papers as PDF files.
+
+Upload model papers.
+
+Upload past examination papers.
+
+Upload term test papers.
+
+Upload revision papers.
+
+Organize papers by grade.
+
+Organize papers by subject and academic year.
+
+Add examination date.
+
+Add paper title and description.
+
+Publish papers to selected grades.
+
+Students can download available papers.
+
+Admin can manage and delete papers.
+
+Track paper downloads if practical.
+
+Restrict private papers to enrolled students.
+
+C. INDIVIDUAL STUDENT PROGRESS TRACKING
+
+Create a detailed student performance management system.
+
+For each student, display:
+
+Student full name.
+
+Student ID.
+
+Grade.
+
+Enrolled courses.
+
+Completed lessons.
+
+Lesson completion percentage.
+
+Online examination results.
+
+Quiz marks.
+
+Previous examination marks.
+
+Attendance percentage.
+
+Assignment performance.
+
+Learning progress history.
+
+Teacher feedback.
+
+Overall performance summary.
+
+Admin and teachers must be able to search students and view individual progress reports.
+
+Students can access only their own progress.
+
+D. GRADE REGISTRATION & ENROLLMENT REQUESTS
+
+Create a Grade Registration Request System.
+
+Students or parents can submit registration requests for:
+
+Grade 6 ICT Classes.
+
+Grade 7 ICT Classes.
+
+Grade 8 ICT Classes.
+
+Grade 9 ICT Classes.
+
+Grade 10 ICT Classes.
+
+Grade 11 ICT Classes.
+
+Registration form fields:
+
+Student full name.
+
+Parent or guardian name.
+
+Student mobile number.
+
+Parent mobile number.
+
+Email address.
+
+School name.
+
+Current grade.
+
+Requested grade.
+
+Academic year.
+
+Preferred class.
+
+Additional message.
+
+Registration statuses:
+
+Pending.
+
+Approved.
+
+Rejected.
+
+Enrolled.
+
+Admin features:
+
+View all registration requests.
+
+Filter by grade.
+
+Search students.
+
+Approve registration requests.
+
+Reject requests.
+
+Add admin notes.
+
+Convert approved registration into a student account or enrollment.
+
+Send registration status notifications.
+
+Export registration data.
+
+E. STUDENT RESULTS & TESTIMONIAL GALLERY
+
+Create a professional academy achievement gallery.
+
+Features:
+
+Display previous student examination results.
+
+Display student achievements.
+
+Display examination success stories.
+
+Display student testimonials.
+
+Display parent testimonials where authorized.
+
+Upload student result images.
+
+Upload testimonial photographs.
+
+Add student name where permission is provided.
+
+Add academic year.
+
+Add grade.
+
+Add achievement description.
+
+Add testimonial text.
+
+Organize achievements into categories.
+
+Admin can add, edit, publish, and remove gallery items.
+
+Privacy:
+
+Obtain appropriate permission before publishing identifiable student information, photographs, or results.
+
+Do not expose private student examination records.
+
+Only publish approved achievements and testimonials.
+
+Provide an option to display results anonymously.
+
+Create a beautiful responsive gallery with modern cards and image previews.
+
+F. TEACHER PROFILE & PHOTO
+
+Add a professional instructor profile section.
+
+Instructor:
+
+Hemantha Wanninayake B.Sc
+
+Features:
+
+Upload instructor profile photograph.
+
+Display a small professional profile image in the homepage.
+
+Display instructor photograph in the About section.
+
+Display instructor information in course pages.
+
+Display instructor photograph in dashboard branding where appropriate.
+
+Add instructor biography.
+
+Add qualifications.
+
+Add teaching experience.
+
+Add ICT teaching specialization.
+
+Add contact information.
+
+Admin can update the profile photograph and biography.
+
+Use Supabase Storage for the instructor image.
+
+The profile photograph must be small, professional, and properly cropped.
+
+G. CASH PAYMENT MANAGEMENT
+
+Create a manual cash payment management system.
+
+Features:
+
+Record payments received directly by the instructor.
+
+Record cash payments.
+
+Record bank transfer payments.
+
+Record other manually verified payment methods.
+
+Student name.
+
+Student ID.
+
+Grade.
+
+Course.
+
+Payment amount.
+
+Payment date.
+
+Payment method.
+
+Payment reference.
+
+Payment notes.
+
+Payment receipt number.
+
+Payment status.
+
+Payment statuses:
+
+Paid.
+
+Pending.
+
+Partial Payment.
+
+Outstanding.
+
+Refunded.
+
+Admin actions:
+
+Add cash payment.
+
+Edit payment record.
+
+Mark payment as received.
+
+Verify bank transfers.
+
+Record partial payments.
+
+View student payment history.
+
+View outstanding balances.
+
+Generate payment receipts.
+
+Filter payments by grade.
+
+Filter payments by date.
+
+Search students.
+
+Export payment reports.
+
+Important:
+
+Manual payment records must only be created or verified by authorized administrators.
+
+Students must not be able to mark their own payments as verified.
+
+H. ATTENDANCE MANAGEMENT SYSTEM
+
+Create a practical class attendance management system.
+
+Features:
+
+Mark students present.
+
+Mark students absent.
+
+Mark late attendance.
+
+Select grade.
+
+Select class.
+
+Select attendance date.
+
+Select students individually.
+
+Bulk attendance marking.
+
+Edit attendance records.
+
+Attendance history.
+
+Attendance percentage.
+
+Monthly attendance report.
+
+Grade-wise attendance report.
+
+Student-wise attendance report.
+
+Admin and authorized teachers can mark attendance.
+
+Students can view their own attendance history.
+
+Prevent duplicate attendance records for the same student, class, and date.
+
+I. ONLINE EXAMINATION SYSTEM
+
+Build a complete online examination platform.
+
+Admin and teachers can:
+
+Create online exams.
+
+Select grade.
+
+Set exam title.
+
+Set exam duration.
+
+Set exam start date and time.
+
+Set exam end date and time.
+
+Create multiple-choice questions.
+
+Create true or false questions.
+
+Create structured questions.
+
+Set marks for each question.
+
+Add answer options.
+
+Configure correct answers.
+
+Publish examinations.
+
+View student exam attempts.
+
+View examination results.
+
+Publish results.
+
+Student features:
+
+View available exams.
+
+Start an examination.
+
+View examination instructions.
+
+Answer questions.
+
+Navigate between questions.
+
+Display countdown timer.
+
+Save answers automatically.
+
+Submit examination.
+
+Auto-submit when time expires.
+
+Display examination completion confirmation.
+
+View results after publication.
+
+Examination security:
+
+Students can only access exams assigned to their grade.
+
+Students can only access their own attempts and results.
+
+Prevent unauthorized examination access.
+
+Validate exam timing server-side.
+
+Prevent duplicate submissions where applicable.
+
+Calculate MCQ marks securely.
+
+Store exam answers securely.
+
+Use database transactions or secure server-side logic for result calculations.
+
+Do not expose correct answers before the exam is completed and results are released.
+
+J. ADMIN DASHBOARD INTEGRATION
+
+Add the following sections to the existing Admin Dashboard:
+
+Grade-wise Announcements.
+
+Question Papers.
+
+Registration Requests.
+
+Student Progress.
+
+Student Results Gallery.
+
+Instructor Profile.
+
+Cash Payments.
+
+Attendance Management.
+
+Online Examinations.
+
+Create professional management tables, filters, search functions, forms, statistics, and action buttons.
+
+All features must integrate with Supabase PostgreSQL and use appropriate Row Level Security policies.
+
+K. DATABASE EXTENSIONS
+
+Create additional tables where appropriate:
+
+registration_requests
+
+announcements
+
+announcement_reads
+
+question_papers
+
+student_achievements
+
+testimonials
+
+instructor_profiles
+
+manual_payments
+
+attendance_sessions
+
+exam_schedules
+
+Add appropriate relationships, indexes, timestamps, validation, and RLS policies.
+
+L. FINAL IMPLEMENTATION REQUIREMENTS
+
+Do not create these features as decorative UI-only components.
+
+Implement actual database operations, authentication checks, authorization, form validation, file uploads, and protected data access.
+
+Provide SQL migrations and Supabase Storage bucket configuration.
+
+Ensure all student-related features work with the existing Grade 6–11 structure.
+
+Maintain the existing premium navy blue, orange, white, and light blue educational design system.
+
+The final LMS must function as a professional Sri Lankan ICT academy management and online learning platform.

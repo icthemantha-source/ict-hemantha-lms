@@ -1,0 +1,6 @@
+{
+  "name": "ICT Hemantha LMS - Hemantha Wanninayake B.Sc ICT Academy",
+  "description": "Professional LMS for Grade 6–11 ICT students featuring recorded video lessons, live classes, online exams, past paper repository, attendance tracking, and admin academy management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
