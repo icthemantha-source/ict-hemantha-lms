@@ -264,21 +264,53 @@ CREATE TABLE IF NOT EXISTS public.question_papers (
 -- 18. GRADE REGISTRATION REQUESTS
 CREATE TABLE IF NOT EXISTS public.registration_requests (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    student_full_name TEXT NOT NULL,
-    parent_name TEXT NOT NULL,
-    student_mobile TEXT NOT NULL,
-    parent_mobile TEXT NOT NULL,
+    student_name TEXT NOT NULL,
+    parent_name TEXT,
+    mobile TEXT NOT NULL,
+    parent_mobile TEXT,
     email TEXT NOT NULL,
-    school_name TEXT NOT NULL,
+    school_name TEXT,
     current_grade INT NOT NULL,
     requested_grade INT NOT NULL,
-    academic_year TEXT DEFAULT '2026',
-    preferred_class TEXT NOT NULL,
-    additional_message TEXT,
+    preferred_batch TEXT NOT NULL,
+    additional_notes TEXT,
     status registration_status_type DEFAULT 'pending'::registration_status_type,
     admin_notes TEXT,
-    submitted_at TIMESTAMPTZ DEFAULT NOW()
+    submitted_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- ==============================================================================
+-- NON-DESTRUCTIVE SQL MIGRATION (FOR EXISTING SUPABASE TABLES)
+-- If your registration_requests table already exists in Supabase, run this:
+-- ==============================================================================
+ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS student_name TEXT;
+ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS parent_name TEXT;
+ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS mobile TEXT;
+ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS parent_mobile TEXT;
+ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS email TEXT;
+ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS school_name TEXT;
+ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS current_grade INT;
+ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS requested_grade INT;
+ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS preferred_batch TEXT;
+ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS additional_notes TEXT;
+ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
+-- If your existing table had student_full_name, backfill student_name if null:
+DO $$ BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'registration_requests' AND column_name = 'student_full_name') THEN
+        UPDATE public.registration_requests SET student_name = student_full_name WHERE student_name IS NULL;
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'registration_requests' AND column_name = 'student_mobile') THEN
+        UPDATE public.registration_requests SET mobile = student_mobile WHERE mobile IS NULL;
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'registration_requests' AND column_name = 'preferred_class') THEN
+        UPDATE public.registration_requests SET preferred_batch = preferred_class WHERE preferred_batch IS NULL;
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'registration_requests' AND column_name = 'additional_message') THEN
+        UPDATE public.registration_requests SET additional_notes = additional_message WHERE additional_notes IS NULL;
+    END IF;
+END $$;
 
 -- 19. STUDENT ACHIEVEMENTS & TESTIMONIALS GALLERY
 CREATE TABLE IF NOT EXISTS public.student_achievements (
@@ -386,3 +418,20 @@ CREATE POLICY "View announcements" ON public.announcements FOR SELECT USING (tru
 CREATE POLICY "View question papers" ON public.question_papers FOR SELECT USING (true);
 CREATE POLICY "Public achievements" ON public.student_achievements FOR SELECT USING (is_published = true);
 CREATE POLICY "Public instructor profile" ON public.instructor_profiles FOR SELECT USING (true);
+
+-- Registration Requests: Anyone (anon or authenticated) can submit a registration request
+CREATE POLICY "Allow public registration insert" ON public.registration_requests 
+    FOR INSERT 
+    TO anon, authenticated 
+    WITH CHECK (true);
+
+-- Registration Requests: Only admins can view and manage registration requests
+CREATE POLICY "Admins can view registration requests" ON public.registration_requests 
+    FOR SELECT 
+    TO authenticated 
+    USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+
+CREATE POLICY "Admins can update registration requests" ON public.registration_requests 
+    FOR UPDATE 
+    TO authenticated 
+    USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));

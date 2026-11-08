@@ -1088,6 +1088,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const newReq: RegistrationRequest = {
       ...reqData,
       id: 'req-' + Date.now(),
+      student_name: reqData.studentFullName,
+      mobile: reqData.studentMobile,
+      preferred_batch: reqData.preferredClass,
+      additional_notes: reqData.additionalMessage,
       submittedAt: new Date().toISOString(),
       status: 'pending'
     };

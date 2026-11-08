@@ -213,6 +213,21 @@ export interface QuestionPaper {
   isRestrictedToEnrolled: boolean;
 }
 
+export interface SupabaseRegistrationPayload {
+  student_name: string;
+  parent_name?: string | null;
+  mobile: string;
+  parent_mobile?: string | null;
+  email: string;
+  school_name?: string | null;
+  current_grade: number;
+  requested_grade: number;
+  preferred_batch: string;
+  additional_notes?: string | null;
+  status?: string;
+  created_at?: string;
+}
+
 export interface RegistrationRequest {
   id: string;
   studentFullName: string;
@@ -226,6 +241,11 @@ export interface RegistrationRequest {
   academicYear: string;
   preferredClass: string;
   additionalMessage?: string;
+  // Supabase column aliases
+  student_name?: string;
+  mobile?: string;
+  preferred_batch?: string;
+  additional_notes?: string;
   status: 'pending' | 'approved' | 'rejected' | 'enrolled';
   submittedAt: string;
   adminNotes?: string;
