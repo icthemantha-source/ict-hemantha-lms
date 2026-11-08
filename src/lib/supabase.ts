@@ -177,34 +177,40 @@ export async function insertRegistrationRequest(
     }
 
     // Check if error is due to a column mismatch in an existing database
-    const isColumnError = error.code === '42703' || (errMsg.includes('column') && (errMsg.includes('does not exist') || errMsg.includes('not found')));
+    const isColumnError = 
+      error.code === '42703' || 
+      error.code === 'PGRST204' || 
+      (errMsg.includes('column') && (errMsg.includes('does not exist') || errMsg.includes('not found') || errMsg.includes('schema cache')));
 
     if (isColumnError) {
-      // If created_at or status is missing in an older schema, attempt insertion without those two fields
-      if (errMsg.includes('created_at') || errMsg.includes('status')) {
-        const minimalRecord = {
-          student_name: payload.student_name,
-          parent_name: payload.parent_name || null,
-          mobile: payload.mobile,
-          parent_mobile: payload.parent_mobile || null,
-          email: payload.email,
-          school_name: payload.school_name || null,
-          current_grade: payload.current_grade,
-          requested_grade: payload.requested_grade,
-          preferred_batch: payload.preferred_batch,
-          additional_notes: payload.additional_notes || null,
+      // Adaptive fallback matching the live Supabase schema columns
+      // (student_name, parent_name, mobile, parent_mobile, email, school_name, grade, requested_grade, status, created_at)
+      const adaptiveRecord: Record<string, any> = {
+        student_name: payload.student_name,
+        parent_name: payload.parent_name || null,
+        mobile: payload.mobile,
+        parent_mobile: payload.parent_mobile || null,
+        email: payload.email,
+        school_name: payload.school_name || null,
+        grade: payload.current_grade,
+        requested_grade: payload.requested_grade,
+        status: payload.status || 'pending',
+        created_at: payload.created_at || new Date().toISOString(),
+      };
+
+      const adaptiveRes = await client
+        .from('registration_requests')
+        .insert([adaptiveRecord]);
+
+      if (!adaptiveRes.error) {
+        return { 
+          success: true, 
+          data: adaptiveRes.data || [adaptiveRecord], 
+          isConfigured: true 
         };
-
-        const retryRes = await client
-          .from('registration_requests')
-          .insert([minimalRecord]);
-
-        if (!retryRes.error) {
-          return { success: true, data: retryRes.data || [minimalRecord], isConfigured: true };
-        }
       }
 
-      // If user had legacy column names (e.g. student_full_name, student_mobile, preferred_class, additional_message)
+      // If user had legacy column names (student_full_name, student_mobile, preferred_class, additional_message)
       const legacyRecord = {
         student_full_name: payload.student_name,
         parent_name: payload.parent_name || null,
@@ -229,7 +235,7 @@ export async function insertRegistrationRequest(
 
       return {
         success: false,
-        error: `Supabase Schema Column Error [${error.code || '42703'}]: ${error.message}.${errDetails}${errHint} Please run the SQL migration to add missing columns.`,
+        error: `Supabase Schema Column Error [${error.code || 'PGRST204'}]: ${error.message}.${errDetails}${errHint} Run the SQL migration in Supabase SQL editor to add the missing columns (current_grade, preferred_batch, additional_notes).`,
         errorCode: error.code,
         isConfigured: true,
       };
