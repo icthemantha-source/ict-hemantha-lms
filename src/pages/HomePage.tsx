@@ -123,18 +123,18 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
                 {/* Main Image Frame */}
                 <div className="relative rounded-2xl overflow-hidden border-2 border-white shadow-2xl bg-white aspect-[4/3] sm:aspect-[16/10]">
                   <img
-                    src="/src/assets/images/hero_sri_lankan_student_1794084338373.jpg"
-                    alt="Sri Lankan school student learning ICT on laptop"
-                    className="w-full h-full object-cover"
+                    src="/assets/aistudio/WhatsApp_Image_2026-11-08_at_04.31.35_6aed44da.jpeg"
+                    alt="Hemantha Wanninayake B.Sc - Senior ICT Lecturer"
+                    className="w-full h-full object-cover object-top"
                     loading="eager"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0B1F4A]/80 via-transparent to-transparent flex items-end p-5">
                     <div className="text-white space-y-1">
                       <div className="text-xs font-bold uppercase tracking-wider text-[#F58220]">
-                        Interactive Online & Physical Sessions
+                        Hemantha Wanninayake B.Sc
                       </div>
                       <p className="text-sm font-semibold leading-tight">
-                        Empowering Sri Lanka’s next generation of software engineers and ICT leaders.
+                        Senior ICT Lecturer · 14+ Years Guiding O/L High Achievers
                       </p>
                     </div>
                   </div>

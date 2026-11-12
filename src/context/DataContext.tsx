@@ -759,7 +759,7 @@ const INITIAL_INSTRUCTOR: InstructorProfile = {
   name: 'Hemantha Wanninayake B.Sc',
   degrees: 'B.Sc (Hons) in Information Technology',
   title: 'Senior ICT Lecturer, Curriculum Specialist & Founder',
-  photoUrl: '/src/assets/images/instructor_hemantha_1794084339711.jpg',
+  photoUrl: '/assets/aistudio/WhatsApp_Image_2026-11-08_at_04.31.35_6aed44da.jpeg',
   bioEn: 'Hemantha Wanninayake B.Sc is one of Sri Lanka’s leading ICT educators with more than 14 years of teaching experience. Having mentored over 8,500 students across Grades 6 through 11, his methodology emphasizes hands-on algorithmic problem solving, clear conceptual mastery, and thorough past paper training that consistently yields 92%+ "A" pass rates in national examinations.',
   bioSi: 'හේමන්ත වන්නිනායක (B.Sc) මහතා වසර 14කට අධික කාලයක් පුරා දිවයිනේ දහස් ගණනක් සිසුන්ට තොරතුරු හා සන්නිවේදන තාක්ෂණය (ICT) විෂය සරලව හා ප්‍රායෝගිකව උගන්වමින් O/L විභාගයේ විශිෂ්ටතම ප්‍රතිඵල ලබාදුන් ප්‍රවීණ දේශකයෙකි.',
   qualifications: [
@@ -876,7 +876,18 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [instructorProfile, setInstructorProfile] = useState<InstructorProfile>(() => {
     const saved = localStorage.getItem('ict_instructor');
-    return saved ? JSON.parse(saved) : INITIAL_INSTRUCTOR;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.photoUrl?.includes('instructor_hemantha_1794084339711')) {
+          parsed.photoUrl = INITIAL_INSTRUCTOR.photoUrl;
+        }
+        return parsed;
+      } catch (e) {
+        return INITIAL_INSTRUCTOR;
+      }
+    }
+    return INITIAL_INSTRUCTOR;
   });
 
   // Local persistence sync

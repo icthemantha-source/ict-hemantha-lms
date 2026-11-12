@@ -26,9 +26,9 @@ export const FloatingWhatsApp: React.FC = () => {
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-white/20 p-0.5 border border-white/40 flex items-center justify-center">
                 <img
-                  src="/src/assets/images/instructor_hemantha_1794084339711.jpg"
+                  src="/assets/aistudio/WhatsApp_Image_2026-11-08_at_04.31.35_6aed44da.jpeg"
                   alt="Hemantha Wanninayake B.Sc"
-                  className="w-full h-full rounded-full object-cover"
+                  className="w-full h-full rounded-full object-cover object-top"
                   onError={(e) => {
                     (e.target as HTMLElement).style.display = 'none';
                   }}
