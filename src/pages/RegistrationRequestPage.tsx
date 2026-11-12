@@ -183,7 +183,7 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
       parent_mobile: parentMobile.trim() || null,
       email: email.trim().toLowerCase(),
       school_name: schoolName.trim() || null,
-      current_grade: Number(currentGrade),
+      current_grade: String(currentGrade),
       requested_grade: Number(requestedGrade),
       preferred_batch: preferredClass,
       additional_notes: additionalMessage.trim() || null,
@@ -257,55 +257,29 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
   };
 
   const copySqlMigration = () => {
-    const sql = `-- Supabase Table & RLS Setup for public.registration_requests
-CREATE TABLE IF NOT EXISTS public.registration_requests (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    student_name TEXT NOT NULL,
-    parent_name TEXT,
-    mobile TEXT NOT NULL,
-    parent_mobile TEXT,
-    email TEXT NOT NULL,
-    school_name TEXT,
-    current_grade INT NOT NULL,
-    requested_grade INT NOT NULL,
-    preferred_batch TEXT NOT NULL,
-    additional_notes TEXT,
-    status TEXT DEFAULT 'pending',
-    submitted_at TIMESTAMPTZ DEFAULT NOW(),
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Safe column additions if table already exists
-ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS student_name TEXT;
-ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS parent_name TEXT;
-ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS mobile TEXT;
-ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS parent_mobile TEXT;
-ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS email TEXT;
-ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS school_name TEXT;
-ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS current_grade INT;
-ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS requested_grade INT;
+    const sql = `-- ICT Hemantha LMS: Fix PGRST204 by adding missing columns & refreshing schema cache
+-- 1. Add missing columns (preserves all existing columns and student records)
+ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS current_grade TEXT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS preferred_batch TEXT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS additional_notes TEXT;
-ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'pending';
-ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
 
--- Enable Row Level Security (RLS)
+-- 2. Backfill current_grade from existing grade column if needed
+UPDATE public.registration_requests 
+SET current_grade = grade::text 
+WHERE current_grade IS NULL AND grade IS NOT NULL;
+
+-- 3. Ensure Row Level Security allows public student submissions
 ALTER TABLE public.registration_requests ENABLE ROW LEVEL SECURITY;
 
--- Allow public / anon users to submit registration requests
-DO $$ BEGIN
-    IF NOT EXISTS (
-        SELECT 1 FROM pg_policies 
-        WHERE tablename = 'registration_requests' 
-        AND policyname = 'Allow public registration insert'
-    ) THEN
-        CREATE POLICY "Allow public registration insert" 
-        ON public.registration_requests 
-        FOR INSERT 
-        TO anon, authenticated 
-        WITH CHECK (true);
-    END IF;
-END $$;`;
+DROP POLICY IF EXISTS "Allow public registration insert" ON public.registration_requests;
+CREATE POLICY "Allow public registration insert" 
+ON public.registration_requests 
+FOR INSERT 
+TO anon, authenticated 
+WITH CHECK (true);
+
+-- 4. Instantly refresh PostgREST schema cache
+NOTIFY pgrst, 'reload schema';`;
 
     navigator.clipboard.writeText(sql);
     setCopiedMigration(true);
@@ -456,6 +430,45 @@ END $$;`;
                     >
                       Enter Supabase URL & Anon Key
                     </button>
+                  </div>
+                )}
+
+                {(submissionErrorCode === 'PGRST204' || 
+                  submissionErrorCode === '42501' || 
+                  submissionError.includes('schema cache') || 
+                  submissionError.includes('additional_notes') || 
+                  submissionError.includes('row-level security')) && (
+                  <div className="pt-2 mt-2 border-t border-red-200/80 space-y-2">
+                    <div className="text-[11px] font-bold text-red-900 flex items-center gap-1.5">
+                      <span>⚡ SQL Migration Required to Add Missing Columns & RLS:</span>
+                    </div>
+                    <div className="p-2.5 bg-slate-900 text-slate-100 rounded-lg font-mono text-[10px] leading-relaxed overflow-x-auto">
+                      <code>
+                        ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS current_grade TEXT;<br />
+                        ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS preferred_batch TEXT;<br />
+                        ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS additional_notes TEXT;<br />
+                        NOTIFY pgrst, 'reload schema';
+                      </code>
+                    </div>
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      <button
+                        type="button"
+                        onClick={copySqlMigration}
+                        className="px-3.5 py-1.5 bg-[#0B1F4A] hover:bg-[#163675] text-white text-[11px] font-bold rounded-lg shadow-sm flex items-center gap-1.5 transition-colors"
+                      >
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>{copiedMigration ? '✓ Copied SQL Migration!' : 'Copy SQL Migration Script'}</span>
+                      </button>
+                      <a
+                        href="https://supabase.com/dashboard/project/tpehwhydacaicalhayft/sql"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-800 text-[11px] font-bold rounded-lg border border-slate-300 shadow-sm flex items-center gap-1.5 transition-colors"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5 text-[#F58220]" />
+                        <span>Open Supabase SQL Editor</span>
+                      </a>
+                    </div>
                   </div>
                 )}
               </div>

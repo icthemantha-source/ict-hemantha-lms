@@ -2,6 +2,21 @@
 -- ICT HEMANTHA LMS - POSTGRESQL & SUPABASE DATABASE SCHEMA
 -- Hemantha Wanninayake B.Sc - ICT Academy (Grades 6–11)
 -- ==============================================================================
+--
+-- ------------------------------------------------------------------------------
+-- QUICK MIGRATION TO FIX PGRST204 (Add missing columns & reload schema cache)
+-- Run this in your Supabase SQL Editor if you see:
+-- "Could not find the 'additional_notes' column of 'registration_requests' in the schema cache"
+-- ------------------------------------------------------------------------------
+-- ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS current_grade TEXT;
+-- ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS preferred_batch TEXT;
+-- ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS additional_notes TEXT;
+-- UPDATE public.registration_requests SET current_grade = grade::text WHERE current_grade IS NULL AND grade IS NOT NULL;
+-- ALTER TABLE public.registration_requests ENABLE ROW LEVEL SECURITY;
+-- DROP POLICY IF EXISTS "Allow public registration insert" ON public.registration_requests;
+-- CREATE POLICY "Allow public registration insert" ON public.registration_requests FOR INSERT TO anon, authenticated WITH CHECK (true);
+-- NOTIFY pgrst, 'reload schema';
+-- ------------------------------------------------------------------------------
 
 -- 1. EXTENSIONS
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

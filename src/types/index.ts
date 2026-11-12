@@ -220,8 +220,9 @@ export interface SupabaseRegistrationPayload {
   parent_mobile?: string | null;
   email: string;
   school_name?: string | null;
-  current_grade: number;
-  requested_grade: number;
+  current_grade: string | number;
+  grade?: string | number;
+  requested_grade: number | string;
   preferred_batch: string;
   additional_notes?: string | null;
   status?: string;
