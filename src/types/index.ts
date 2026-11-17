@@ -218,7 +218,7 @@ export interface SupabaseRegistrationPayload {
   parent_name?: string | null;
   mobile: string;
   parent_mobile?: string | null;
-  email: string;
+  email?: string | null;
   school_name?: string | null;
   current_grade: string | number;
   grade?: string | number;

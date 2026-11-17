@@ -163,11 +163,7 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
       setValidationError('Parent mobile number is invalid (must be at least 9-10 digits).');
       return;
     }
-    if (!email.trim()) {
-      setValidationError('Please enter an email address for registration confirmation.');
-      return;
-    }
-    if (!isValidEmail(email)) {
+    if (email.trim() && !isValidEmail(email)) {
       setValidationError('Please enter a valid email address (e.g. student@gmail.com).');
       return;
     }
@@ -181,7 +177,7 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
       parent_name: parentName.trim() || null,
       mobile: studentMobile.trim(),
       parent_mobile: parentMobile.trim() || null,
-      email: email.trim().toLowerCase(),
+      email: email.trim() ? email.trim().toLowerCase() : null,
       school_name: schoolName.trim() || null,
       current_grade: String(currentGrade),
       requested_grade: Number(requestedGrade),
@@ -210,7 +206,7 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
         parentName: parentName.trim() || 'Not specified',
         studentMobile: studentMobile.trim(),
         parentMobile: parentMobile.trim() || studentMobile.trim(),
-        email: email.trim().toLowerCase(),
+        email: email.trim() ? email.trim().toLowerCase() : '',
         schoolName: schoolName.trim() || 'School in Sri Lanka',
         currentGrade,
         requestedGrade,
@@ -553,17 +549,16 @@ NOTIFY pgrst, 'reload schema';`;
               {/* 5. Email Address (email) */}
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                  Email Address <span className="text-red-500">*</span>
+                  Email Address
                 </label>
                 <div className="relative">
                   <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="email"
-                    required
                     disabled={isSubmitting}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="student@example.com"
+                    placeholder="student@example.com (optional)"
                     className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-hidden focus:border-[#2563A6] disabled:bg-slate-50 disabled:text-slate-400"
                   />
                 </div>
