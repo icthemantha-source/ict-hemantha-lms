@@ -50,7 +50,16 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
                     {t('hero.sinhalaTitle')}
                   </span>
                   <span className="block text-2xl sm:text-3xl lg:text-4xl text-[#0B1F4A] font-bold">
-                    {t('hero.englishTitle')}
+                    {t('hero.englishTitle').split('B.Sc').map((part, index, arr) => (
+                      <React.Fragment key={index}>
+                        {part}
+                        {index < arr.length - 1 && (
+                          <span className="text-sm sm:text-base lg:text-lg font-semibold underline decoration-[#F58220] decoration-2 underline-offset-4">
+                            B.Sc
+                          </span>
+                        )}
+                      </React.Fragment>
+                    ))}
                   </span>
                 </h1>
               </div>
