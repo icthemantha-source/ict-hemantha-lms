@@ -1151,7 +1151,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ navigate }) => {
             {activeTab === 'courses' && (
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-bold text-[#0B1F4A]">Course Lesson Counts & Fees</h3>
+                  <h3 className="text-lg font-bold text-[#0B1F4A]">Course Lesson Counts</h3>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1161,8 +1161,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ navigate }) => {
                         <span className="text-xs font-bold px-2 py-0.5 rounded bg-[#0B1F4A] text-white">
                           Grade {course.grade} ICT
                         </span>
-                        <span className="text-xs font-bold text-[#F58220]">
-                          LKR {course.monthlyFeeLkr.toLocaleString()} / mo
+                        <span className="text-xs font-bold text-[#2563A6]">
+                          {course.durationHours} Hours
                         </span>
                       </div>
 

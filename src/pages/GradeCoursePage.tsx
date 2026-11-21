@@ -93,9 +93,9 @@ export const GradeCoursePage: React.FC<GradeCoursePageProps> = ({ grade, navigat
             {/* Enrollment / Status Card */}
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/20 text-white min-w-[280px] space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-300">Monthly Enrollment:</span>
-                <span className="text-xl font-bold text-[#F58220]">
-                  LKR {course.monthlyFeeLkr.toLocaleString()}
+                <span className="text-xs text-slate-300">Course Access:</span>
+                <span className="text-xs font-bold text-[#F58220] uppercase tracking-wider">
+                  Grade {grade} ICT Program
                 </span>
               </div>
 
@@ -147,7 +147,7 @@ export const GradeCoursePage: React.FC<GradeCoursePageProps> = ({ grade, navigat
                     className="px-5 py-2.5 rounded-xl bg-[#F58220] hover:bg-[#e07519] text-white text-xs font-bold shadow-md flex items-center gap-2"
                   >
                     <CreditCard className="w-4 h-4" />
-                    <span>Enroll Now (LKR {course.monthlyFeeLkr.toLocaleString()})</span>
+                    <span>Enroll Now</span>
                   </button>
                 </div>
               ) : currentLesson ? (

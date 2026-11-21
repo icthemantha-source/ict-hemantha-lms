@@ -234,11 +234,9 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
 
               {/* Card Footer */}
               <div className="px-5 py-4 bg-[#F5F7FA] border-t border-slate-100 flex items-center justify-between text-xs">
-                <div>
-                  <span className="text-slate-500 block text-[11px]">{t('grades.monthlyFee')}</span>
-                  <span className="font-bold text-[#0B1F4A] text-sm">
-                    LKR {course.monthlyFeeLkr.toLocaleString()}
-                  </span>
+                <div className="flex items-center gap-1.5 font-semibold text-slate-600">
+                  <BookOpen className="w-4 h-4 text-[#2563A6]" />
+                  <span>{course.lessonCount} {t('grades.lessons')}</span>
                 </div>
                 <div className="flex items-center gap-1 font-semibold text-[#2563A6] group-hover:text-[#F58220] transition-colors">
                   <span>{t('grades.viewDetails')}</span>

@@ -181,9 +181,8 @@ export const PayHereModal: React.FC<PayHereModalProps> = ({ course, isOpen, onCl
                   <p className="text-xs text-[#2563A6] mt-0.5">Instructor: {course.instructorName}</p>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs text-slate-500 block">Monthly Fee</span>
-                  <span className="text-xl font-extrabold text-[#0B1F4A]">
-                    LKR {course.monthlyFeeLkr.toLocaleString()}
+                  <span className="text-xs font-bold text-[#0B1F4A] px-2.5 py-1 rounded-lg bg-white border border-[#2563A6]/20">
+                    Grade {course.grade}
                   </span>
                 </div>
               </div>
@@ -260,7 +259,7 @@ export const PayHereModal: React.FC<PayHereModalProps> = ({ course, isOpen, onCl
                     ) : (
                       <>
                         <Smartphone className="w-4 h-4" />
-                        <span>Pay LKR {course.monthlyFeeLkr.toLocaleString()} via PayHere</span>
+                        <span>Proceed via PayHere</span>
                       </>
                     )}
                   </button>
