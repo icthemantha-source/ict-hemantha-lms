@@ -95,6 +95,8 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
     saveSupabaseCredentials(configUrl, configKey);
     const updated = getSupabaseCredentials();
     setIsConfigured(updated.isConfigured);
+    setConfigUrl(updated.url);
+    setConfigKey(updated.anonKey);
     setConfigSaveMsg(updated.isConfigured ? '✓ Supabase credentials configured successfully!' : 'Credentials saved (please verify URL format)');
     setTimeout(() => setConfigSaveMsg(''), 4000);
   };
