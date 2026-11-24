@@ -130,23 +130,13 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
                 <div className="absolute -inset-2 bg-gradient-to-r from-[#2563A6]/20 to-[#F58220]/20 rounded-3xl blur-xl" />
                 
                 {/* Main Image Frame */}
-                <div className="relative rounded-2xl overflow-hidden border-2 border-white shadow-2xl bg-white aspect-[4/3] sm:aspect-[16/10]">
+                <div className="relative rounded-2xl overflow-hidden border-2 border-white shadow-2xl bg-[#0B1F4A] aspect-video">
                   <img
-                    src="/assets/aistudio/WhatsApp_Image_2026-11-22_at_18.43.50_40899cb7.jpeg"
-                    alt="Hemantha Wanninayake B.Sc - Senior ICT Lecturer"
-                    className="w-full h-full object-cover object-top"
+                    src="/assets/aistudio/WhatsApp_Image_2026-11-22_at_18.43.53_a1d1eaab.jpeg"
+                    alt="Sri Lankan ICT Students - 14+ Years Experience, 92% A Pass Rate, Grade 6-11 ICT"
+                    className="w-full h-full object-cover object-center"
                     loading="eager"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B1F4A]/80 via-transparent to-transparent flex items-end p-5">
-                    <div className="text-white space-y-1">
-                      <div className="text-xs font-bold uppercase tracking-wider text-[#F58220]">
-                        Hemantha Wanninayake B.Sc
-                      </div>
-                      <p className="text-sm font-semibold leading-tight">
-                        Senior ICT Lecturer · 14+ Years Guiding O/L High Achievers
-                      </p>
-                    </div>
-                  </div>
                 </div>
 
                 {/* Floating Trust Card */}
