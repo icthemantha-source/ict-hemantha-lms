@@ -716,42 +716,42 @@ const INITIAL_REQUESTS: RegistrationRequest[] = [
 const INITIAL_ACHIEVEMENTS: StudentAchievement[] = [
   {
     id: 'ach-1',
-    studentName: 'Methmi Nethmini',
-    academicYear: '2024 O/L',
+    studentName: 'G.B.S. Uththarangi',
+    academicYear: 'G.C.E. O/L',
     grade: 11,
     examType: 'G.C.E. O/L ICT',
     resultGrade: 'A',
-    achievementText: 'Scored 96 marks in O/L ICT with an exceptional distinction.',
-    testimonialText: '"Hemantha Sir explains Python algorithms and database logic so clearly. His past paper model discussions gave me the highest confidence in the examination hall!"',
+    achievementText: 'Holy Family Balika Vidyalaya, Kurunegala',
+    testimonialText: '"An A in ICT was my dream, and Hemantha Sir made it a reality."',
     isAnonymous: false,
     isPublished: true,
-    photoUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200'
+    photoUrl: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_18.43.55__1__fee6587b.jpeg'
   },
   {
     id: 'ach-2',
-    studentName: 'Charith Disanayake',
-    academicYear: '2024 O/L',
+    studentName: 'Nethra Wanninayaka',
+    academicYear: 'G.C.E. O/L',
     grade: 11,
     examType: 'G.C.E. O/L ICT',
     resultGrade: 'A',
-    achievementText: 'Secured District 3rd Rank in Kurunegala district for ICT.',
-    testimonialText: '"The online mock exams and LMS notes covered exactly what appeared on the national paper. Best ICT class in Sri Lanka!"',
+    achievementText: 'Bandaranayake National School, Ahattuwewa',
+    testimonialText: '"Demonstrated exceptional excellence and achievement in ICT, earning Grade A through dedication, skill, and consistent performance."',
     isAnonymous: false,
     isPublished: true,
-    photoUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200'
+    photoUrl: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_18.43.55_32a93a66.jpeg'
   },
   {
     id: 'ach-3',
-    studentName: 'Nisali Alwis',
-    academicYear: '2023 O/L',
+    studentName: 'Salidu Prabhaswara',
+    academicYear: 'G.C.E. O/L',
     grade: 11,
     examType: 'G.C.E. O/L ICT',
     resultGrade: 'A',
-    achievementText: 'Achieved an "A" Grade after improving from 42 marks in Term 1.',
-    testimonialText: '"Sir helped me overcome my fear of flowchart logic and SQL queries. Grateful to Hemantha Academy!"',
+    achievementText: 'Maliyadeva Viduhala, Kurunegala',
+    testimonialText: '"From Maliyadeva College, I joined Sir\'s class. His methods are the reason for my A!"',
     isAnonymous: false,
     isPublished: true,
-    photoUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=200'
+    photoUrl: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_18.43.56_f4f0e19f.jpeg'
   }
 ];
 

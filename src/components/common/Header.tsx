@@ -82,8 +82,12 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, navigate }) => {
             onClick={() => handleNav('/')}
             className="flex items-center gap-3.5 cursor-pointer group shrink-0"
           >
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#0B1F4A] to-[#2563A6] flex items-center justify-center text-white shadow-md shadow-[#0B1F4A]/15 group-hover:scale-105 transition-transform">
-              <GraduationCap className="w-6 h-6 text-[#F58220]" />
+            <div className="w-11 h-11 rounded-xl overflow-hidden bg-white border border-slate-200 flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+              <img
+                src="/assets/aistudio/Untitled_Design_2eca8a63.png"
+                alt="ICT Academy Logo"
+                className="w-full h-full object-contain p-0.5"
+              />
             </div>
             <div className="flex flex-col">
               <span className="text-lg font-bold tracking-tight text-[#0B1F4A] leading-tight group-hover:text-[#2563A6] transition-colors">

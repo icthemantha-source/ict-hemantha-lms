@@ -132,7 +132,7 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
                 {/* Main Image Frame */}
                 <div className="relative rounded-2xl overflow-hidden border-2 border-white shadow-2xl bg-white aspect-[4/3] sm:aspect-[16/10]">
                   <img
-                    src="/assets/aistudio/WhatsApp_Image_2026-11-08_at_04.31.35_6aed44da.jpeg"
+                    src="/assets/aistudio/WhatsApp_Image_2026-11-22_at_18.43.50_40899cb7.jpeg"
                     alt="Hemantha Wanninayake B.Sc - Senior ICT Lecturer"
                     className="w-full h-full object-cover object-top"
                     loading="eager"
@@ -459,31 +459,24 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
           {achievements.map((ach) => (
             <div
               key={ach.id}
-              className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs flex flex-col justify-between space-y-4"
+              className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition-shadow flex flex-col"
             >
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <img
-                    src={ach.photoUrl}
-                    alt={ach.studentName}
-                    className="w-11 h-11 rounded-full object-cover border-2 border-[#2563A6]"
-                  />
-                  <div>
-                    <h4 className="font-bold text-sm text-slate-900">{ach.studentName}</h4>
-                    <span className="text-xs text-slate-500">{ach.academicYear} · Grade {ach.grade}</span>
-                  </div>
-                  <span className="ml-auto px-2 py-0.5 rounded font-extrabold text-xs bg-emerald-100 text-emerald-800">
-                    Grade {ach.resultGrade}
-                  </span>
-                </div>
-
-                <p className="text-xs text-slate-600 italic leading-relaxed">
-                  {ach.testimonialText}
-                </p>
+              <div className="w-full aspect-[3/2] bg-slate-50 overflow-hidden">
+                <img
+                  src={ach.photoUrl}
+                  alt={`${ach.studentName} - ${ach.achievementText}`}
+                  className="w-full h-full object-cover"
+                />
               </div>
 
-              <div className="pt-3 border-t border-slate-100 text-[11px] font-semibold text-[#2563A6]">
-                {ach.achievementText}
+              <div className="px-4 py-3 border-t border-slate-100 flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <h4 className="font-bold text-sm text-slate-900 truncate">{ach.studentName}</h4>
+                  <p className="text-xs text-slate-500 truncate">{ach.achievementText}</p>
+                </div>
+                <span className="shrink-0 px-2.5 py-0.5 rounded font-extrabold text-xs bg-emerald-100 text-emerald-800">
+                  Grade {ach.resultGrade}
+                </span>
               </div>
             </div>
           ))}
