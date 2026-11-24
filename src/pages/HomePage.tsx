@@ -249,7 +249,7 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
               <div className="relative">
                 <div className="w-64 h-64 sm:w-72 sm:h-72 rounded-2xl overflow-hidden border-4 border-white shadow-xl bg-slate-100">
                   <img
-                    src={instructorProfile.photoUrl}
+                    src="/assets/aistudio/WhatsApp_Image_2026-11-22_at_18.43.50_40899cb7.jpeg"
                     alt={instructorProfile.name}
                     className="w-full h-full object-cover object-top"
                   />
