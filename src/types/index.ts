@@ -223,6 +223,7 @@ export interface SupabaseRegistrationPayload {
   current_grade: string | number;
   grade?: string | number;
   requested_grade: number | string;
+  medium: string;
   preferred_batch: string;
   additional_notes?: string | null;
   status?: string;
@@ -239,6 +240,7 @@ export interface RegistrationRequest {
   schoolName: string;
   currentGrade: GradeLevel;
   requestedGrade: GradeLevel;
+  medium?: string;
   academicYear: string;
   preferredClass: string;
   additionalMessage?: string;

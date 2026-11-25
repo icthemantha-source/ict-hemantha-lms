@@ -24,7 +24,8 @@ import {
   Settings,
   X,
   Copy,
-  ExternalLink
+  ExternalLink,
+  Globe
 } from 'lucide-react';
 
 interface RegistrationRequestPageProps {
@@ -35,7 +36,7 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
   const { submitRegistrationRequest } = useData();
   const { language } = useLanguage();
 
-  // Form Fields to Save (12 fields):
+  // Form Fields to Save:
   // 1. student_name
   // 2. parent_name
   // 3. mobile (Student Mobile / WhatsApp)
@@ -43,7 +44,7 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
   // 5. email
   // 6. school_name
   // 7. current_grade
-  // 8. requested_grade
+  // 8. medium
   // 9. preferred_batch
   // 10. additional_notes
   // 11. status
@@ -55,8 +56,8 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
   const [email, setEmail] = useState('');
   const [schoolName, setSchoolName] = useState('');
   const [currentGrade, setCurrentGrade] = useState<GradeLevel>(10);
-  const [requestedGrade, setRequestedGrade] = useState<GradeLevel>(11);
-  const [preferredClass, setPreferredClass] = useState('Sunday Morning Online Class (8:30 AM - 11:30 AM)');
+  const [medium, setMedium] = useState('');
+  const [preferredClass, setPreferredClass] = useState('');
   const [additionalMessage, setAdditionalMessage] = useState('');
 
   // Submission & Validation States
@@ -67,7 +68,8 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
   const [submissionErrorCode, setSubmissionErrorCode] = useState<string | null>(null);
   const [savedSummary, setSavedSummary] = useState<{
     studentName: string;
-    requestedGrade: GradeLevel;
+    grade: GradeLevel;
+    medium: string;
     preferredBatch: string;
     mobile: string;
     savedToSupabase: boolean;
@@ -169,10 +171,26 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
       setValidationError('Please enter a valid email address (e.g. student@gmail.com).');
       return;
     }
+    if (!medium.trim()) {
+      setValidationError(
+        language === 'si'
+          ? 'කරුණාකර ඉගෙනුම් මාධ්‍යය (Medium) තෝරන්න.'
+          : 'Please select a study medium (Sinhala or English).'
+      );
+      return;
+    }
+    if (!preferredClass.trim()) {
+      setValidationError(
+        language === 'si'
+          ? 'කරුණාකර වඩාත් කැමති පන්ති වේලාව සහ කණ්ඩායම තෝරන්න.'
+          : 'Please select your preferred class time & batch.'
+      );
+      return;
+    }
 
     setIsSubmitting(true);
 
-    // Prepare payload with all 12 requested fields
+    // Prepare payload with all fields
     const nowIso = new Date().toISOString();
     const payload = {
       student_name: fullName.trim(),
@@ -182,8 +200,9 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
       email: email.trim() ? email.trim().toLowerCase() : null,
       school_name: schoolName.trim() || null,
       current_grade: String(currentGrade),
-      requested_grade: Number(requestedGrade),
-      preferred_batch: preferredClass,
+      requested_grade: Number(currentGrade),
+      medium: medium.trim(),
+      preferred_batch: preferredClass.trim(),
       additional_notes: additionalMessage.trim() || null,
       status: 'pending',
       created_at: nowIso,
@@ -211,20 +230,22 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
         email: email.trim() ? email.trim().toLowerCase() : '',
         schoolName: schoolName.trim() || 'School in Sri Lanka',
         currentGrade,
-        requestedGrade,
+        requestedGrade: currentGrade,
+        medium: medium.trim(),
         academicYear: '2026',
-        preferredClass,
+        preferredClass: preferredClass.trim(),
         additionalMessage: additionalMessage.trim(),
         student_name: fullName.trim(),
         mobile: studentMobile.trim(),
-        preferred_batch: preferredClass,
+        preferred_batch: preferredClass.trim(),
         additional_notes: additionalMessage.trim(),
       });
 
       setSavedSummary({
         studentName: fullName.trim(),
-        requestedGrade,
-        preferredBatch: preferredClass,
+        grade: currentGrade,
+        medium: medium.trim(),
+        preferredBatch: preferredClass.trim(),
         mobile: studentMobile.trim(),
         savedToSupabase: true,
       });
@@ -236,6 +257,8 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
       setParentMobile('');
       setEmail('');
       setSchoolName('');
+      setMedium('');
+      setPreferredClass('');
       setAdditionalMessage('');
       setIsSubmitted(true);
     } catch (err: any) {
@@ -255,8 +278,9 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
   };
 
   const copySqlMigration = () => {
-    const sql = `-- ICT Hemantha LMS: Fix PGRST204 by adding missing columns & refreshing schema cache
+    const sql = `-- ICT Hemantha LMS: Add missing columns & refresh PostgREST schema cache
 -- 1. Add missing columns (preserves all existing columns and student records)
+ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS medium TEXT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS current_grade TEXT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS preferred_batch TEXT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS additional_notes TEXT;
@@ -303,17 +327,21 @@ NOTIFY pgrst, 'reload schema';`;
               Thank You, {savedSummary.studentName}!
             </h2>
             <p className="text-sm text-slate-600 max-w-lg mx-auto font-sinhala leading-relaxed">
-              ඔබගේ Grade {savedSummary.requestedGrade} ICT පන්ති ලියාපදිංචි ඉල්ලීම සාර්ථකව Supabase දත්ත ගබඩාව වෙත ලැබිණි. අපගේ පරිපාලන කණ්ඩායම WhatsApp හෝ දුරකථන මාර්ගයෙන් කෙටි වේලාවකින් ඔබව සම්බන්ධ කරගනු ඇත.
+              ඔබගේ Grade {savedSummary.grade} ICT පන්ති ලියාපදිංචි ඉල්ලීම සාර්ථකව Supabase දත්ත ගබඩාව වෙත ලැබිණි. අපගේ පරිපාලන කණ්ඩායම WhatsApp හෝ දුරකථන මාර්ගයෙන් කෙටි වේලාවකින් ඔබව සම්බන්ධ කරගනු ඇත.
             </p>
           </div>
 
           <div className="bg-[#EAF3FC] rounded-2xl p-4 text-xs text-[#0B1F4A] max-w-md mx-auto space-y-1.5 text-left border border-[#2563A6]/20">
             <div className="flex justify-between">
-              <span className="text-slate-500">Requested Grade:</span>
-              <span className="font-bold">Grade {savedSummary.requestedGrade} ICT</span>
+              <span className="text-slate-500">Grade:</span>
+              <span className="font-bold">Grade {savedSummary.grade} ICT</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500">Preferred Batch:</span>
+              <span className="text-slate-500">Medium:</span>
+              <span className="font-bold">{savedSummary.medium}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-slate-500">Preferred Class Time & Batch:</span>
               <span className="font-bold">{savedSummary.preferredBatch}</span>
             </div>
             <div className="flex justify-between">
@@ -330,7 +358,7 @@ NOTIFY pgrst, 'reload schema';`;
 
           <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
             <a
-              href={`https://wa.me/94772735518?text=${encodeURIComponent(`Hello Hemantha Sir, I submitted a registration request for Grade ${savedSummary.requestedGrade} ICT. Student: ${savedSummary.studentName}, Mobile: ${savedSummary.mobile}`)}`}
+              href={`https://wa.me/94772735518?text=${encodeURIComponent(`Hello Hemantha Sir, I submitted a registration request for Grade ${savedSummary.grade} ICT. Student: ${savedSummary.studentName}, Mobile: ${savedSummary.mobile}`)}`}
               target="_blank"
               rel="noreferrer"
               className="px-6 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold rounded-xl shadow-md flex items-center justify-center gap-2 transition-transform hover:scale-[1.01]"
@@ -432,8 +460,10 @@ NOTIFY pgrst, 'reload schema';`;
                 )}
 
                 {(submissionErrorCode === 'PGRST204' || 
+                  submissionErrorCode === '42703' || 
                   submissionErrorCode === '42501' || 
                   submissionError.includes('schema cache') || 
+                  submissionError.includes('medium') || 
                   submissionError.includes('additional_notes') || 
                   submissionError.includes('row-level security')) && (
                   <div className="pt-2 mt-2 border-t border-red-200/80 space-y-2">
@@ -442,6 +472,7 @@ NOTIFY pgrst, 'reload schema';`;
                     </div>
                     <div className="p-2.5 bg-slate-900 text-slate-100 rounded-lg font-mono text-[10px] leading-relaxed overflow-x-auto">
                       <code>
+                        ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS medium TEXT;<br />
                         ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS current_grade TEXT;<br />
                         ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS preferred_batch TEXT;<br />
                         ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS additional_notes TEXT;<br />
@@ -493,10 +524,10 @@ NOTIFY pgrst, 'reload schema';`;
                 </div>
               </div>
 
-              {/* 2. Parent Name (parent_name) */}
+              {/* 2. Parents Name (parent_name) */}
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                  Parent / Guardian Name
+                  {language === 'si' ? 'දෙමාපියන්ගේ නම (Parents Name)' : 'Parents Name'}
                 </label>
                 <div className="relative">
                   <User className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -584,7 +615,7 @@ NOTIFY pgrst, 'reload schema';`;
                 </div>
               </div>
 
-              {/* 7. Current Grade (current_grade) */}
+              {/* Current Grade (current_grade) */}
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1.5">
                   Current Grade in School
@@ -604,43 +635,65 @@ NOTIFY pgrst, 'reload schema';`;
                 </select>
               </div>
 
-              {/* 8. Requested Grade (requested_grade) */}
+              {/* 9. Medium (medium) */}
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                  Requested Grade Class <span className="text-red-500">*</span>
+                  {language === 'si' ? 'මාධ්‍යය (Medium)' : 'Medium'} <span className="text-red-500">*</span>
                 </label>
-                <select
-                  disabled={isSubmitting}
-                  value={requestedGrade}
-                  onChange={(e) => setRequestedGrade(Number(e.target.value) as GradeLevel)}
-                  className="w-full p-2.5 text-xs rounded-xl border border-[#F58220] bg-orange-50/30 text-[#0B1F4A] font-bold disabled:bg-slate-50 disabled:text-slate-400"
-                >
-                  <option value={6}>Grade 6 ICT Classes</option>
-                  <option value={7}>Grade 7 ICT Classes</option>
-                  <option value={8}>Grade 8 ICT Classes</option>
-                  <option value={9}>Grade 9 ICT Classes</option>
-                  <option value={10}>Grade 10 ICT Classes</option>
-                  <option value={11}>Grade 11 ICT Classes (O/L Revision)</option>
-                </select>
+                <div className="relative">
+                  <Globe className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <select
+                    required
+                    disabled={isSubmitting}
+                    value={medium}
+                    onChange={(e) => setMedium(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:border-[#2563A6] disabled:bg-slate-50 disabled:text-slate-400"
+                  >
+                    <option value="">
+                      {language === 'si' ? 'මාධ්‍යය තෝරන්න' : 'Select Medium'}
+                    </option>
+                    <option value="Sinhala">
+                      {language === 'si' ? 'සිංහල (Sinhala)' : 'Sinhala'}
+                    </option>
+                    <option value="English">
+                      {language === 'si' ? 'ඉංග්‍රීසි (English)' : 'English'}
+                    </option>
+                  </select>
+                </div>
               </div>
 
-              {/* 9. Preferred Batch (preferred_batch) */}
-              <div className="md:col-span-2">
+              {/* 10. Preferred Class Time & Batch (preferred_batch) */}
+              <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                  Preferred Class Time & Batch (preferred_batch)
+                  {language === 'si'
+                    ? 'වඩාත් කැමති පන්ති වේලාව සහ කණ්ඩායම (Preferred Class Time & Batch)'
+                    : 'Preferred Class Time & Batch'}{' '}
+                  <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <Clock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <select
+                    required
                     disabled={isSubmitting}
                     value={preferredClass}
                     onChange={(e) => setPreferredClass(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl border border-slate-300 bg-white disabled:bg-slate-50 disabled:text-slate-400"
+                    className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:border-[#2563A6] disabled:bg-slate-50 disabled:text-slate-400"
                   >
-                    <option value="Sunday Morning Online Class (8:30 AM - 11:30 AM)">Sunday Morning Online Class (8:30 AM - 11:30 AM)</option>
-                    <option value="Saturday Evening Online Class (4:00 PM - 7:00 PM)">Saturday Evening Online Class (4:00 PM - 7:00 PM)</option>
-                    <option value="Wednesday Evening Paper Class (5:00 PM - 7:30 PM)">Wednesday Evening Paper Class (5:00 PM - 7:30 PM)</option>
-                    <option value="Physical Hall Session (Weekend Batch)">Physical Hall Session (Weekend Batch)</option>
+                    <option value="">
+                      {language === 'si' ? 'පන්ති වේලාව සහ කණ්ඩායම තෝරන්න' : 'Select Preferred Class Time & Batch'}
+                    </option>
+                    <option value="Saturday Morning">
+                      {language === 'si' ? 'සෙනසුරාදා උදෑසන (Saturday Morning)' : 'Saturday Morning'}
+                    </option>
+                    <option value="Saturday Evening">
+                      {language === 'si' ? 'සෙනසුරාදා සවස (Saturday Evening)' : 'Saturday Evening'}
+                    </option>
+                    <option value="Other">
+                      {language === 'si' ? 'වෙනත් (Other)' : 'Other'}
+                    </option>
+                    <option value="Online">
+                      {language === 'si' ? 'මාර්ගගත පන්ති (Online)' : 'Online'}
+                    </option>
                   </select>
                 </div>
               </div>

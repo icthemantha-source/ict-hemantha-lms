@@ -283,10 +283,11 @@ CREATE TABLE IF NOT EXISTS public.registration_requests (
     parent_name TEXT,
     mobile TEXT NOT NULL,
     parent_mobile TEXT,
-    email TEXT NOT NULL,
+    email TEXT,
     school_name TEXT,
     current_grade INT NOT NULL,
     requested_grade INT NOT NULL,
+    medium TEXT NOT NULL,
     preferred_batch TEXT NOT NULL,
     additional_notes TEXT,
     status registration_status_type DEFAULT 'pending'::registration_status_type,
@@ -307,6 +308,7 @@ ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS email TEXT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS school_name TEXT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS current_grade INT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS requested_grade INT;
+ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS medium TEXT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS preferred_batch TEXT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS additional_notes TEXT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
