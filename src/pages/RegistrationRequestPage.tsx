@@ -25,7 +25,9 @@ import {
   X,
   Copy,
   ExternalLink,
-  Globe
+  Globe,
+  Laptop,
+  Building2
 } from 'lucide-react';
 
 interface RegistrationRequestPageProps {
@@ -35,24 +37,23 @@ interface RegistrationRequestPageProps {
 export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = ({ navigate }) => {
   const { submitRegistrationRequest } = useData();
   const { language } = useLanguage();
+  const isSi = language === 'si';
 
-  // Form Fields to Save:
-  // 1. student_name
+  // Form Fields:
+  // 1. student_name (Required)
   // 2. parent_name
-  // 3. mobile (Student Mobile / WhatsApp)
-  // 4. parent_mobile
-  // 5. email
+  // 3. mobile (Required)
+  // 4. class_type (Required: 'Online' | 'Physical')
+  // 5. email (Optional)
   // 6. school_name
   // 7. current_grade
-  // 8. medium
-  // 9. preferred_batch
+  // 8. medium (Required: 'Sinhala' | 'English')
+  // 9. preferred_batch (Required)
   // 10. additional_notes
-  // 11. status
-  // 12. created_at
   const [fullName, setFullName] = useState('');
   const [parentName, setParentName] = useState('');
   const [studentMobile, setStudentMobile] = useState('');
-  const [parentMobile, setParentMobile] = useState('');
+  const [classType, setClassType] = useState<'Online' | 'Physical' | ''>('');
   const [email, setEmail] = useState('');
   const [schoolName, setSchoolName] = useState('');
   const [currentGrade, setCurrentGrade] = useState<GradeLevel>(10);
@@ -69,6 +70,7 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
   const [savedSummary, setSavedSummary] = useState<{
     studentName: string;
     grade: GradeLevel;
+    classType: string;
     medium: string;
     preferredBatch: string;
     mobile: string;
@@ -99,7 +101,15 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
     setIsConfigured(updated.isConfigured);
     setConfigUrl(updated.url);
     setConfigKey(updated.anonKey);
-    setConfigSaveMsg(updated.isConfigured ? '✓ Supabase credentials configured successfully!' : 'Credentials saved (please verify URL format)');
+    setConfigSaveMsg(
+      updated.isConfigured
+        ? isSi
+          ? '✓ Supabase සම්බන්ධතා තොරතුරු සාර්ථකව සුරකින ලදී!'
+          : '✓ Supabase credentials configured successfully!'
+        : isSi
+          ? 'තොරතුරු සුරකින ලදී (කරුණාකර URL ආකෘතිය පරීක්ෂා කරන්න)'
+          : 'Credentials saved (please verify URL format)'
+    );
     setTimeout(() => setConfigSaveMsg(''), 4000);
   };
 
@@ -109,21 +119,39 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
     try {
       const client = getSupabaseClient();
       if (!client) {
-        setConnectionTestResult({ ok: false, msg: 'Supabase client could not be initialized. Please check URL and Anon Key.' });
+        setConnectionTestResult({
+          ok: false,
+          msg: isSi
+            ? 'Supabase සම්බන්ධතාවය ආරම්භ කළ නොහැක. කරුණාකර URL සහ Anon Key පරීක්ෂා කරන්න.'
+            : 'Supabase client could not be initialized. Please check URL and Anon Key.',
+        });
         return;
       }
-      // Check if registration_requests table exists and RLS allows access
       const { error } = await client
         .from('registration_requests')
         .select('count', { count: 'exact', head: true });
 
       if (!error) {
-        setConnectionTestResult({ ok: true, msg: '✓ Successfully connected to public.registration_requests table!' });
+        setConnectionTestResult({
+          ok: true,
+          msg: isSi
+            ? '✓ public.registration_requests වගුව වෙත සාර්ථකව සම්බන්ධ විය!'
+            : '✓ Successfully connected to public.registration_requests table!',
+        });
       } else if (error.code === '42501') {
-        // Table exists but RLS SELECT policy is restricted to admins (standard for public registration forms)
-        setConnectionTestResult({ ok: true, msg: '✓ Connected to Supabase! Table public.registration_requests is reachable with RLS enabled.' });
+        setConnectionTestResult({
+          ok: true,
+          msg: isSi
+            ? '✓ Supabase වෙත සම්බන්ධ විය! RLS ආරක්ෂාව සමඟ වගුව ක්‍රියාත්මකයි.'
+            : '✓ Connected to Supabase! Table public.registration_requests is reachable with RLS enabled.',
+        });
       } else if (error.code === '42P01') {
-        setConnectionTestResult({ ok: false, msg: `Table public.registration_requests does not exist. Please run the migration SQL script in your Supabase SQL Editor.` });
+        setConnectionTestResult({
+          ok: false,
+          msg: isSi
+            ? 'public.registration_requests වගුව නොමැත. කරුණාකර Supabase SQL Editor හි migration script එක ක්‍රියාත්මක කරන්න.'
+            : 'Table public.registration_requests does not exist. Please run the migration SQL script in your Supabase SQL Editor.',
+        });
       } else {
         setConnectionTestResult({ ok: false, msg: `Supabase returned: [${error.code}] ${error.message}` });
       }
@@ -148,40 +176,64 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
 
     // 1. Validate required fields before submission
     if (!fullName.trim()) {
-      setValidationError('Please enter the student\'s full name.');
+      setValidationError(
+        isSi
+          ? 'කරුණාකර ශිෂ්‍යයාගේ සම්පූර්ණ නම ඇතුළත් කරන්න.'
+          : 'Please enter the student\'s full name.'
+      );
       return;
     }
     if (fullName.trim().length < 3) {
-      setValidationError('Student full name must be at least 3 characters.');
+      setValidationError(
+        isSi
+          ? 'ශිෂ්‍යයාගේ නම අවම වශයෙන් අක්ෂර 3ක්වත් විය යුතුය.'
+          : 'Student name must be at least 3 characters.'
+      );
       return;
     }
     if (!studentMobile.trim()) {
-      setValidationError('Please enter a student mobile / WhatsApp number.');
+      setValidationError(
+        isSi
+          ? 'කරුණාකර ශිෂ්‍යයාගේ ජංගම / WhatsApp දුරකථන අංකය ඇතුළත් කරන්න.'
+          : 'Please enter a student mobile / WhatsApp number.'
+      );
       return;
     }
     if (!isValidPhone(studentMobile)) {
-      setValidationError('Please enter a valid student mobile number (at least 9-10 digits).');
+      setValidationError(
+        isSi
+          ? 'කරුණාකර වලංගු ජංගම දුරකථන අංකයක් ඇතුළත් කරන්න (අවම වශයෙන් ඉලක්කම් 9–10).'
+          : 'Please enter a valid student mobile number (at least 9-10 digits).'
+      );
       return;
     }
-    if (parentMobile.trim() && !isValidPhone(parentMobile)) {
-      setValidationError('Parent mobile number is invalid (must be at least 9-10 digits).');
+    if (!classType) {
+      setValidationError(
+        isSi
+          ? 'කරුණාකර පන්ති වර්ගය (Online හෝ Physical) තෝරන්න.'
+          : 'Please select a class type (Online or Physical).'
+      );
       return;
     }
     if (email.trim() && !isValidEmail(email)) {
-      setValidationError('Please enter a valid email address (e.g. student@gmail.com).');
+      setValidationError(
+        isSi
+          ? 'කරුණාකර වලංගු විද්‍යුත් තැපැල් ලිපිනයක් ඇතුළත් කරන්න (උදා: student@gmail.com).'
+          : 'Please enter a valid email address (e.g. student@gmail.com).'
+      );
       return;
     }
     if (!medium.trim()) {
       setValidationError(
-        language === 'si'
-          ? 'කරුණාකර ඉගෙනුම් මාධ්‍යය (Medium) තෝරන්න.'
+        isSi
+          ? 'කරුණාකර ඉගෙනුම් මාධ්‍යය (සිංහල හෝ ඉංග්‍රීසි) තෝරන්න.'
           : 'Please select a study medium (Sinhala or English).'
       );
       return;
     }
     if (!preferredClass.trim()) {
       setValidationError(
-        language === 'si'
+        isSi
           ? 'කරුණාකර වඩාත් කැමති පන්ති වේලාව සහ කණ්ඩායම තෝරන්න.'
           : 'Please select your preferred class time & batch.'
       );
@@ -190,13 +242,13 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
 
     setIsSubmitting(true);
 
-    // Prepare payload with all fields
+    // Prepare payload (excludes parent_mobile from form submission)
     const nowIso = new Date().toISOString();
     const payload = {
       student_name: fullName.trim(),
       parent_name: parentName.trim() || null,
       mobile: studentMobile.trim(),
-      parent_mobile: parentMobile.trim() || null,
+      class_type: classType,
       email: email.trim() ? email.trim().toLowerCase() : null,
       school_name: schoolName.trim() || null,
       current_grade: String(currentGrade),
@@ -209,24 +261,25 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
     };
 
     try {
-      // Connect and insert into Supabase database table `public.registration_requests`
       const supabaseResult = await insertRegistrationRequest(payload);
 
-      // REQUIREMENT 8: Display a success message ONLY after Supabase confirms successful insertion.
-      // REQUIREMENT 9: Display the actual Supabase error if insertion fails.
       if (!supabaseResult.success) {
-        setSubmissionError(supabaseResult.error || 'Failed to insert registration into Supabase.');
+        setSubmissionError(
+          supabaseResult.error ||
+            (isSi
+              ? 'Supabase දත්ත ගබඩාව වෙත ලියාපදිංචිය සුරැකීමට අසමත් විය.'
+              : 'Failed to insert registration into Supabase.')
+        );
         setSubmissionErrorCode(supabaseResult.errorCode || null);
         return;
       }
 
-      // Supabase confirmed successful insertion!
       // Sync local context for instant LMS admin portal display
       submitRegistrationRequest({
         studentFullName: fullName.trim(),
         parentName: parentName.trim() || 'Not specified',
         studentMobile: studentMobile.trim(),
-        parentMobile: parentMobile.trim() || studentMobile.trim(),
+        classType,
         email: email.trim() ? email.trim().toLowerCase() : '',
         schoolName: schoolName.trim() || 'School in Sri Lanka',
         currentGrade,
@@ -237,6 +290,7 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
         additionalMessage: additionalMessage.trim(),
         student_name: fullName.trim(),
         mobile: studentMobile.trim(),
+        class_type: classType,
         preferred_batch: preferredClass.trim(),
         additional_notes: additionalMessage.trim(),
       });
@@ -244,6 +298,7 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
       setSavedSummary({
         studentName: fullName.trim(),
         grade: currentGrade,
+        classType,
         medium: medium.trim(),
         preferredBatch: preferredClass.trim(),
         mobile: studentMobile.trim(),
@@ -254,7 +309,7 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
       setFullName('');
       setParentName('');
       setStudentMobile('');
-      setParentMobile('');
+      setClassType('');
       setEmail('');
       setSchoolName('');
       setMedium('');
@@ -262,7 +317,12 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
       setAdditionalMessage('');
       setIsSubmitted(true);
     } catch (err: any) {
-      setSubmissionError(err.message || 'An unexpected error occurred during Supabase submission.');
+      setSubmissionError(
+        err.message ||
+          (isSi
+            ? 'දත්ත යොමු කිරීමේදී අනපේක්ෂිත දෝෂයක් ඇති විය.'
+            : 'An unexpected error occurred during Supabase submission.')
+      );
       setSubmissionErrorCode('UNEXPECTED');
     } finally {
       setIsSubmitting(false);
@@ -278,19 +338,15 @@ export const RegistrationRequestPage: React.FC<RegistrationRequestPageProps> = (
   };
 
   const copySqlMigration = () => {
-    const sql = `-- ICT Hemantha LMS: Add missing columns & refresh PostgREST schema cache
--- 1. Add missing columns (preserves all existing columns and student records)
+    const sql = `-- ICT Hemantha LMS: Add class_type & medium columns & refresh PostgREST schema cache
+-- 1. Add missing columns non-destructively (preserves all existing columns and records)
+ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS class_type TEXT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS medium TEXT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS current_grade TEXT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS preferred_batch TEXT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS additional_notes TEXT;
 
--- 2. Backfill current_grade from existing grade column if needed
-UPDATE public.registration_requests 
-SET current_grade = grade::text 
-WHERE current_grade IS NULL AND grade IS NOT NULL;
-
--- 3. Ensure Row Level Security allows public student submissions
+-- 2. Ensure Row Level Security allows public student submissions
 ALTER TABLE public.registration_requests ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "Allow public registration insert" ON public.registration_requests;
@@ -300,12 +356,42 @@ FOR INSERT
 TO anon, authenticated 
 WITH CHECK (true);
 
--- 4. Instantly refresh PostgREST schema cache
+-- 3. Instantly refresh PostgREST schema cache
 NOTIFY pgrst, 'reload schema';`;
 
     navigator.clipboard.writeText(sql);
     setCopiedMigration(true);
     setTimeout(() => setCopiedMigration(false), 3000);
+  };
+
+  const getLocalizedBatch = (val: string) => {
+    if (!isSi) return val;
+    switch (val) {
+      case 'Saturday Morning':
+        return 'සෙනසුරාදා උදෑසන (Saturday Morning)';
+      case 'Saturday Evening':
+        return 'සෙනසුරාදා සවස (Saturday Evening)';
+      case 'Other':
+        return 'වෙනත් (Other)';
+      case 'Online':
+        return 'මාර්ගගත පන්ති (Online)';
+      default:
+        return val;
+    }
+  };
+
+  const getLocalizedMedium = (val: string) => {
+    if (!isSi) return val;
+    if (val === 'Sinhala') return 'සිංහල (Sinhala)';
+    if (val === 'English') return 'ඉංග්‍රීසි (English)';
+    return val;
+  };
+
+  const getLocalizedClassType = (val: string) => {
+    if (!isSi) return val;
+    if (val === 'Online') return 'මාර්ගගත (Online)';
+    if (val === 'Physical') return 'භෞතික පන්ති (Physical)';
+    return val;
   };
 
   return (
@@ -321,62 +407,78 @@ NOTIFY pgrst, 'reload schema';`;
           <div className="space-y-2">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold uppercase tracking-wider">
               <Database className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Confirmed Saved to Supabase Table: registration_requests</span>
+              <span>
+                {isSi
+                  ? 'ලියාපදිංචිය සාර්ථකව සුරකින ලදී (Supabase)'
+                  : 'Confirmed Saved to Supabase Table: registration_requests'}
+              </span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0B1F4A]">
-              Thank You, {savedSummary.studentName}!
+              {isSi ? `ස්තූතියි, ${savedSummary.studentName}!` : `Thank You, ${savedSummary.studentName}!`}
             </h2>
             <p className="text-sm text-slate-600 max-w-lg mx-auto font-sinhala leading-relaxed">
-              ඔබගේ Grade {savedSummary.grade} ICT පන්ති ලියාපදිංචි ඉල්ලීම සාර්ථකව Supabase දත්ත ගබඩාව වෙත ලැබිණි. අපගේ පරිපාලන කණ්ඩායම WhatsApp හෝ දුරකථන මාර්ගයෙන් කෙටි වේලාවකින් ඔබව සම්බන්ධ කරගනු ඇත.
+              {isSi
+                ? `ඔබගේ ${savedSummary.grade} ශ්‍රේණිය ICT පන්ති ලියාපදිංචි ඉල්ලීම සාර්ථකව Supabase දත්ත ගබඩාව වෙත ලැබිණි. අපගේ පරිපාලන කණ්ඩායම WhatsApp හෝ දුරකථන මාර්ගයෙන් කෙටි වේලාවකින් ඔබව සම්බන්ධ කරගනු ඇත.`
+                : `Your Grade ${savedSummary.grade} ICT registration request has been saved to our database. Our academic coordinator will contact you shortly via WhatsApp or phone to confirm your enrollment.`}
             </p>
           </div>
 
           <div className="bg-[#EAF3FC] rounded-2xl p-4 text-xs text-[#0B1F4A] max-w-md mx-auto space-y-1.5 text-left border border-[#2563A6]/20">
-            <div className="flex justify-between">
-              <span className="text-slate-500">Grade:</span>
-              <span className="font-bold">Grade {savedSummary.grade} ICT</span>
+            <div className="flex justify-between gap-2">
+              <span className="text-slate-500">{isSi ? 'ශ්‍රේණිය:' : 'Grade:'}</span>
+              <span className="font-bold">
+                {isSi ? `${savedSummary.grade} ශ්‍රේණිය ICT` : `Grade ${savedSummary.grade} ICT`}
+              </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-slate-500">Medium:</span>
-              <span className="font-bold">{savedSummary.medium}</span>
+            <div className="flex justify-between gap-2">
+              <span className="text-slate-500">{isSi ? 'පන්ති වර්ගය:' : 'Class Type:'}</span>
+              <span className="font-bold">{getLocalizedClassType(savedSummary.classType)}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-slate-500">Preferred Class Time & Batch:</span>
-              <span className="font-bold">{savedSummary.preferredBatch}</span>
+            <div className="flex justify-between gap-2">
+              <span className="text-slate-500">{isSi ? 'මාධ්‍යය:' : 'Medium:'}</span>
+              <span className="font-bold">{getLocalizedMedium(savedSummary.medium)}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-slate-500">Contact Number:</span>
+            <div className="flex justify-between gap-2">
+              <span className="text-slate-500">
+                {isSi ? 'පන්ති වේලාව සහ කණ්ඩායම:' : 'Preferred Class Time & Batch:'}
+              </span>
+              <span className="font-bold text-right">{getLocalizedBatch(savedSummary.preferredBatch)}</span>
+            </div>
+            <div className="flex justify-between gap-2">
+              <span className="text-slate-500">{isSi ? 'දුරකථන අංකය:' : 'Contact Number:'}</span>
               <span className="font-mono font-bold">{savedSummary.mobile}</span>
             </div>
-            <div className="flex justify-between border-t border-[#2563A6]/10 pt-1.5">
-              <span className="text-slate-500">Supabase Record:</span>
+            <div className="flex justify-between gap-2 border-t border-[#2563A6]/10 pt-1.5">
+              <span className="text-slate-500">{isSi ? 'දත්ත ගබඩාව:' : 'Supabase Record:'}</span>
               <span className="font-semibold text-emerald-700">
-                ✓ Verified inserted into public.registration_requests
+                {isSi ? '✓ සාර්ථකව ඇතුළත් කරන ලදී' : '✓ Verified inserted into public.registration_requests'}
               </span>
             </div>
           </div>
 
           <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
             <a
-              href={`https://wa.me/94772735518?text=${encodeURIComponent(`Hello Hemantha Sir, I submitted a registration request for Grade ${savedSummary.grade} ICT. Student: ${savedSummary.studentName}, Mobile: ${savedSummary.mobile}`)}`}
+              href={`https://wa.me/94772735518?text=${encodeURIComponent(`Hello Hemantha Sir, I submitted a registration request for Grade ${savedSummary.grade} ICT (${savedSummary.classType} - ${savedSummary.medium} Medium, ${savedSummary.preferredBatch}). Student: ${savedSummary.studentName}, Mobile: ${savedSummary.mobile}`)}`}
               target="_blank"
               rel="noreferrer"
               className="px-6 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold rounded-xl shadow-md flex items-center justify-center gap-2 transition-transform hover:scale-[1.01]"
             >
-              <span>Verify on WhatsApp (077 273 5518)</span>
+              <span>
+                {isSi ? 'WhatsApp මගින් තහවුරු කරන්න (0772735518)' : 'Verify on WhatsApp (0772735518)'}
+              </span>
             </a>
             <button
               onClick={handleResetForm}
               className="px-6 py-3 border border-slate-300 text-slate-700 hover:bg-slate-50 text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-colors"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span>Submit Another Registration</span>
+              <span>{isSi ? 'තවත් ලියාපදිංචියක් යොමු කරන්න' : 'Submit Another Registration'}</span>
             </button>
             <button
               onClick={() => navigate('/')}
               className="px-6 py-3 bg-[#0B1F4A] hover:bg-[#163675] text-white text-xs font-bold rounded-xl"
             >
-              Return to Home
+              {isSi ? 'මුල් පිටුවට යන්න' : 'Return to Home'}
             </button>
           </div>
         </div>
@@ -385,11 +487,13 @@ NOTIFY pgrst, 'reload schema';`;
         <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
           
           {/* Header Banner */}
-          <div className="bg-[#0B1F4A] text-white p-8 sm:p-10 space-y-2">
+          <div className="bg-[#0B1F4A] text-white p-6 sm:p-10 space-y-2">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F58220] text-xs font-bold uppercase tracking-wider text-white">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Academic Year 2026 Admissions</span>
+                <span>
+                  {isSi ? '2026 අධ්‍යයන වර්ෂය සඳහා බඳවා ගැනීම්' : 'Academic Year 2026 Admissions'}
+                </span>
               </div>
 
               {/* Supabase Connection Status Badge with interactive config trigger */}
@@ -401,24 +505,32 @@ NOTIFY pgrst, 'reload schema';`;
                     ? 'bg-emerald-500/20 text-emerald-200 border-emerald-400/30 hover:bg-emerald-500/30' 
                     : 'bg-amber-500/20 text-amber-200 border-amber-400/30 hover:bg-amber-500/30'
                 }`}
-                title="View Supabase connection status & settings"
+                title={isSi ? 'Supabase සැකසුම් පරීක්ෂා කරන්න' : 'View Supabase connection status & settings'}
               >
                 <Database className={`w-3 h-3 ${isConfigured ? 'text-emerald-400' : 'text-amber-400'}`} />
-                <span>{isConfigured ? 'Supabase Connected' : 'Configure Supabase'}</span>
+                <span>
+                  {isConfigured
+                    ? isSi ? 'Supabase සම්බන්ධයි' : 'Supabase Connected'
+                    : isSi ? 'Supabase සකසන්න' : 'Configure Supabase'}
+                </span>
                 <Settings className="w-3 h-3 opacity-70" />
               </button>
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-              Grade 6–11 ICT Class Registration Request
+              {isSi
+                ? '6–11 ශ්‍රේණි ICT පන්ති ලියාපදිංචි ඉල්ලීම'
+                : 'Grade 6–11 ICT Class Registration Request'}
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 font-sinhala leading-relaxed">
-              හේමන්ත වන්නිනායක (B.Sc) ICT ඇකඩමියේ නව පන්ති සඳහා අදම ආසනයක් වෙන්කරවා ගන්න.
+              {isSi
+                ? 'හේමන්ත වන්නිනායක (B.Sc) ICT ඇකඩමියේ නව පන්ති සඳහා අදම ආසනයක් වෙන්කරවා ගන්න.'
+                : 'Reserve your seat today for Grade 6–11 ICT classes conducted by Hemantha Wanninayake B.Sc.'}
             </p>
           </div>
 
           {/* Form Container */}
-          <form onSubmit={handleSubmit} className="p-8 sm:p-10 space-y-6">
+          <form onSubmit={handleSubmit} noValidate className="p-6 sm:p-10 space-y-6">
             
             {/* Validation Error Banner */}
             {validationError && (
@@ -434,14 +546,17 @@ NOTIFY pgrst, 'reload schema';`;
                 <div className="font-bold flex items-center justify-between text-red-900">
                   <div className="flex items-center gap-2">
                     <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
-                    <span>Supabase Database Error {submissionErrorCode ? `(${submissionErrorCode})` : ''}</span>
+                    <span>
+                      {isSi ? 'Supabase දත්ත ගබඩා දෝෂය' : 'Supabase Database Error'}{' '}
+                      {submissionErrorCode ? `(${submissionErrorCode})` : ''}
+                    </span>
                   </div>
                   <button
                     type="button"
                     onClick={() => setShowConfigModal(true)}
                     className="text-[11px] underline text-red-700 hover:text-red-900 font-semibold"
                   >
-                    Check Supabase Settings
+                    {isSi ? 'සැකසුම් පරීක්ෂා කරන්න' : 'Check Supabase Settings'}
                   </button>
                 </div>
                 <p className="text-[11px] text-red-700 leading-relaxed font-mono bg-red-100/60 p-2.5 rounded-lg border border-red-200">
@@ -454,7 +569,7 @@ NOTIFY pgrst, 'reload schema';`;
                       onClick={() => setShowConfigModal(true)}
                       className="px-3 py-1.5 bg-[#0B1F4A] text-white text-[11px] font-bold rounded-lg hover:bg-[#163675]"
                     >
-                      Enter Supabase URL & Anon Key
+                      {isSi ? 'Supabase URL සහ යතුර ඇතුළත් කරන්න' : 'Enter Supabase URL & Anon Key'}
                     </button>
                   </div>
                 )}
@@ -463,15 +578,21 @@ NOTIFY pgrst, 'reload schema';`;
                   submissionErrorCode === '42703' || 
                   submissionErrorCode === '42501' || 
                   submissionError.includes('schema cache') || 
+                  submissionError.includes('class_type') || 
                   submissionError.includes('medium') || 
                   submissionError.includes('additional_notes') || 
                   submissionError.includes('row-level security')) && (
                   <div className="pt-2 mt-2 border-t border-red-200/80 space-y-2">
                     <div className="text-[11px] font-bold text-red-900 flex items-center gap-1.5">
-                      <span>⚡ SQL Migration Required to Add Missing Columns & RLS:</span>
+                      <span>
+                        {isSi
+                          ? '⚡ දත්ත ගබඩා තීරු සහ RLS යාවත්කාලීන කිරීමට පහත SQL කේතය ක්‍රියාත්මක කරන්න:'
+                          : '⚡ SQL Migration Required to Add Missing Columns & RLS:'}
+                      </span>
                     </div>
                     <div className="p-2.5 bg-slate-900 text-slate-100 rounded-lg font-mono text-[10px] leading-relaxed overflow-x-auto">
                       <code>
+                        ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS class_type TEXT;<br />
                         ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS medium TEXT;<br />
                         ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS current_grade TEXT;<br />
                         ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS preferred_batch TEXT;<br />
@@ -486,7 +607,11 @@ NOTIFY pgrst, 'reload schema';`;
                         className="px-3.5 py-1.5 bg-[#0B1F4A] hover:bg-[#163675] text-white text-[11px] font-bold rounded-lg shadow-sm flex items-center gap-1.5 transition-colors"
                       >
                         <Copy className="w-3.5 h-3.5" />
-                        <span>{copiedMigration ? '✓ Copied SQL Migration!' : 'Copy SQL Migration Script'}</span>
+                        <span>
+                          {copiedMigration
+                            ? isSi ? '✓ SQL පිටපත් කරන ලදී!' : '✓ Copied SQL Migration!'
+                            : isSi ? 'SQL Migration පිටපත් කරන්න' : 'Copy SQL Migration Script'}
+                        </span>
                       </button>
                       <a
                         href="https://supabase.com/dashboard/project/tpehwhydacaicalhayft/sql"
@@ -495,7 +620,7 @@ NOTIFY pgrst, 'reload schema';`;
                         className="px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-800 text-[11px] font-bold rounded-lg border border-slate-300 shadow-sm flex items-center gap-1.5 transition-colors"
                       >
                         <ExternalLink className="w-3.5 h-3.5 text-[#F58220]" />
-                        <span>Open Supabase SQL Editor</span>
+                        <span>{isSi ? 'Supabase SQL Editor විවෘත කරන්න' : 'Open Supabase SQL Editor'}</span>
                       </a>
                     </div>
                   </div>
@@ -505,10 +630,10 @@ NOTIFY pgrst, 'reload schema';`;
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               
-              {/* 1. Student Name (student_name) */}
+              {/* 1. Student Name (student_name) - Required */}
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                  Student Full Name <span className="text-red-500">*</span>
+                  {isSi ? 'ශිෂ්‍යයාගේ සම්පූර්ණ නම' : 'Student Name'} <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <User className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -518,7 +643,7 @@ NOTIFY pgrst, 'reload schema';`;
                     disabled={isSubmitting}
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    placeholder="e.g. Malith Sandeepa Bandara"
+                    placeholder={isSi ? 'උදා: මලිත් සන්දීප බණ්ඩාර' : 'e.g. Malith Sandeepa Bandara'}
                     className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-hidden focus:border-[#2563A6] disabled:bg-slate-50 disabled:text-slate-400"
                   />
                 </div>
@@ -527,7 +652,7 @@ NOTIFY pgrst, 'reload schema';`;
               {/* 2. Parents Name (parent_name) */}
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                  {language === 'si' ? 'දෙමාපියන්ගේ නම (Parents Name)' : 'Parents Name'}
+                  {isSi ? 'දෙමාපියන්ගේ නම' : 'Parents Name'}
                 </label>
                 <div className="relative">
                   <User className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -536,16 +661,17 @@ NOTIFY pgrst, 'reload schema';`;
                     disabled={isSubmitting}
                     value={parentName}
                     onChange={(e) => setParentName(e.target.value)}
-                    placeholder="e.g. Sunil Bandara"
+                    placeholder={isSi ? 'උදා: සුනිල් බණ්ඩාර' : 'e.g. Sunil Bandara'}
                     className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-hidden focus:border-[#2563A6] disabled:bg-slate-50 disabled:text-slate-400"
                   />
                 </div>
               </div>
 
-              {/* 3. Student Mobile (mobile) */}
+              {/* 3. Student Mobile / WhatsApp (mobile) - Required */}
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                  Student Mobile / WhatsApp <span className="text-red-500">*</span>
+                  {isSi ? 'ශිෂ්‍යයාගේ ජංගම / WhatsApp අංකය' : 'Student Mobile / WhatsApp'}{' '}
+                  <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -555,34 +681,74 @@ NOTIFY pgrst, 'reload schema';`;
                     disabled={isSubmitting}
                     value={studentMobile}
                     onChange={(e) => setStudentMobile(e.target.value)}
-                    placeholder="077 123 4567"
+                    placeholder={isSi ? '077 123 4567' : '077 123 4567'}
                     className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-hidden focus:border-[#2563A6] disabled:bg-slate-50 disabled:text-slate-400"
                   />
                 </div>
               </div>
 
-              {/* 4. Parent Mobile (parent_mobile) */}
+              {/* 4. Class Type (class_type) - Required: Online / Physical */}
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                  Parent Mobile Number
+                  {isSi ? 'පන්ති වර්ගය' : 'Class Type'} <span className="text-red-500">*</span>
                 </label>
-                <div className="relative">
-                  <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="tel"
-                    disabled={isSubmitting}
-                    value={parentMobile}
-                    onChange={(e) => setParentMobile(e.target.value)}
-                    placeholder="071 987 6543"
-                    className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-hidden focus:border-[#2563A6] disabled:bg-slate-50 disabled:text-slate-400"
-                  />
+                <div
+                  role="radiogroup"
+                  aria-label={isSi ? 'පන්ති වර්ගය' : 'Class Type'}
+                  className="grid grid-cols-2 gap-3"
+                >
+                  {(['Online', 'Physical'] as const).map((option) => {
+                    const selected = classType === option;
+                    const Icon = option === 'Online' ? Laptop : Building2;
+                    return (
+                      <label
+                        key={option}
+                        className={`relative flex items-center gap-2.5 px-3 py-2 rounded-xl border text-xs font-bold cursor-pointer transition-all select-none ${
+                          isSubmitting ? 'opacity-60 cursor-not-allowed' : ''
+                        } ${
+                          selected
+                            ? 'bg-[#0B1F4A] text-white border-[#F58220] ring-2 ring-[#F58220]/30 shadow-md'
+                            : 'bg-slate-50 text-[#0B1F4A] border-slate-300 hover:border-[#2563A6] hover:bg-[#EAF3FC]/50'
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="class_type"
+                          value={option}
+                          checked={selected}
+                          disabled={isSubmitting}
+                          onChange={() => setClassType(option)}
+                          className="sr-only"
+                        />
+                        <span
+                          className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 transition-colors ${
+                            selected
+                              ? 'border-[#F58220] bg-[#F58220]/20'
+                              : 'border-slate-400 bg-white'
+                          }`}
+                        >
+                          {selected && <span className="w-2 h-2 rounded-full bg-[#F58220]" />}
+                        </span>
+                        <Icon
+                          className={`w-4 h-4 shrink-0 ${
+                            selected ? 'text-[#F58220]' : 'text-[#2563A6]'
+                          }`}
+                        />
+                        <span className="truncate">
+                          {option === 'Online'
+                            ? isSi ? 'මාර්ගගත (Online)' : 'Online'
+                            : isSi ? 'භෞතික (Physical)' : 'Physical'}
+                        </span>
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* 5. Email Address (email) */}
+              {/* 5. Email Address (email) - Optional */}
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                  Email Address
+                  {isSi ? 'විද්‍යුත් තැපැල් ලිපිනය (විකල්ප)' : 'Email Address (Optional)'}
                 </label>
                 <div className="relative">
                   <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -591,7 +757,7 @@ NOTIFY pgrst, 'reload schema';`;
                     disabled={isSubmitting}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="student@example.com (optional)"
+                    placeholder={isSi ? 'student@example.com (විකල්ප)' : 'student@example.com (optional)'}
                     className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-hidden focus:border-[#2563A6] disabled:bg-slate-50 disabled:text-slate-400"
                   />
                 </div>
@@ -600,7 +766,7 @@ NOTIFY pgrst, 'reload schema';`;
               {/* 6. School Name (school_name) */}
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                  School Name
+                  {isSi ? 'පාසලේ නම' : 'School Name'}
                 </label>
                 <div className="relative">
                   <School className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -609,36 +775,36 @@ NOTIFY pgrst, 'reload schema';`;
                     disabled={isSubmitting}
                     value={schoolName}
                     onChange={(e) => setSchoolName(e.target.value)}
-                    placeholder="e.g. Royal College Colombo / Maliyadeva"
+                    placeholder={isSi ? 'උදා: මලියදේව විද්‍යාලය / රාජකීය විද්‍යාලය' : 'e.g. Royal College Colombo / Maliyadeva'}
                     className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl border border-slate-300 focus:outline-hidden focus:border-[#2563A6] disabled:bg-slate-50 disabled:text-slate-400"
                   />
                 </div>
               </div>
 
-              {/* Current Grade (current_grade) */}
+              {/* 7. Current Grade in School (current_grade) */}
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                  Current Grade in School
+                  {isSi ? 'පාසලේ වත්මන් ශ්‍රේණිය' : 'Current Grade in School'}
                 </label>
                 <select
                   disabled={isSubmitting}
                   value={currentGrade}
                   onChange={(e) => setCurrentGrade(Number(e.target.value) as GradeLevel)}
-                  className="w-full p-2.5 text-xs rounded-xl border border-slate-300 bg-white disabled:bg-slate-50 disabled:text-slate-400"
+                  className="w-full p-2.5 text-xs rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:border-[#2563A6] disabled:bg-slate-50 disabled:text-slate-400"
                 >
-                  <option value={6}>Grade 6</option>
-                  <option value={7}>Grade 7</option>
-                  <option value={8}>Grade 8</option>
-                  <option value={9}>Grade 9</option>
-                  <option value={10}>Grade 10</option>
-                  <option value={11}>Grade 11</option>
+                  <option value={6}>{isSi ? '6 ශ්‍රේණිය (Grade 6)' : 'Grade 6'}</option>
+                  <option value={7}>{isSi ? '7 ශ්‍රේණිය (Grade 7)' : 'Grade 7'}</option>
+                  <option value={8}>{isSi ? '8 ශ්‍රේණිය (Grade 8)' : 'Grade 8'}</option>
+                  <option value={9}>{isSi ? '9 ශ්‍රේණිය (Grade 9)' : 'Grade 9'}</option>
+                  <option value={10}>{isSi ? '10 ශ්‍රේණිය (Grade 10)' : 'Grade 10'}</option>
+                  <option value={11}>{isSi ? '11 ශ්‍රේණිය (Grade 11)' : 'Grade 11'}</option>
                 </select>
               </div>
 
-              {/* 9. Medium (medium) */}
+              {/* 8. Medium (medium) - Required */}
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                  {language === 'si' ? 'මාධ්‍යය (Medium)' : 'Medium'} <span className="text-red-500">*</span>
+                  {isSi ? 'ඉගෙනුම් මාධ්‍යය' : 'Medium'} <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <Globe className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -650,24 +816,22 @@ NOTIFY pgrst, 'reload schema';`;
                     className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:border-[#2563A6] disabled:bg-slate-50 disabled:text-slate-400"
                   >
                     <option value="">
-                      {language === 'si' ? 'මාධ්‍යය තෝරන්න' : 'Select Medium'}
+                      {isSi ? 'මාධ්‍යය තෝරන්න' : 'Select Medium'}
                     </option>
                     <option value="Sinhala">
-                      {language === 'si' ? 'සිංහල (Sinhala)' : 'Sinhala'}
+                      {isSi ? 'සිංහල (Sinhala)' : 'Sinhala'}
                     </option>
                     <option value="English">
-                      {language === 'si' ? 'ඉංග්‍රීසි (English)' : 'English'}
+                      {isSi ? 'ඉංග්‍රීසි (English)' : 'English'}
                     </option>
                   </select>
                 </div>
               </div>
 
-              {/* 10. Preferred Class Time & Batch (preferred_batch) */}
-              <div>
+              {/* 9. Preferred Class Time & Batch (preferred_batch) - Required */}
+              <div className="md:col-span-2">
                 <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                  {language === 'si'
-                    ? 'වඩාත් කැමති පන්ති වේලාව සහ කණ්ඩායම (Preferred Class Time & Batch)'
-                    : 'Preferred Class Time & Batch'}{' '}
+                  {isSi ? 'වඩාත් කැමති පන්ති වේලාව සහ කණ්ඩායම' : 'Preferred Class Time & Batch'}{' '}
                   <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
@@ -680,35 +844,39 @@ NOTIFY pgrst, 'reload schema';`;
                     className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl border border-slate-300 bg-white focus:outline-hidden focus:border-[#2563A6] disabled:bg-slate-50 disabled:text-slate-400"
                   >
                     <option value="">
-                      {language === 'si' ? 'පන්ති වේලාව සහ කණ්ඩායම තෝරන්න' : 'Select Preferred Class Time & Batch'}
+                      {isSi ? 'පන්ති වේලාව සහ කණ්ඩායම තෝරන්න' : 'Select Preferred Class Time & Batch'}
                     </option>
                     <option value="Saturday Morning">
-                      {language === 'si' ? 'සෙනසුරාදා උදෑසන (Saturday Morning)' : 'Saturday Morning'}
+                      {isSi ? 'සෙනසුරාදා උදෑසන (Saturday Morning)' : 'Saturday Morning'}
                     </option>
                     <option value="Saturday Evening">
-                      {language === 'si' ? 'සෙනසුරාදා සවස (Saturday Evening)' : 'Saturday Evening'}
+                      {isSi ? 'සෙනසුරාදා සවස (Saturday Evening)' : 'Saturday Evening'}
                     </option>
                     <option value="Other">
-                      {language === 'si' ? 'වෙනත් (Other)' : 'Other'}
+                      {isSi ? 'වෙනත් (Other)' : 'Other'}
                     </option>
                     <option value="Online">
-                      {language === 'si' ? 'මාර්ගගත පන්ති (Online)' : 'Online'}
+                      {isSi ? 'මාර්ගගත පන්ති (Online)' : 'Online'}
                     </option>
                   </select>
                 </div>
               </div>
 
-              {/* 10. Additional Notes (additional_notes) */}
+              {/* 10. Additional Notes / Learning Goals (additional_notes) */}
               <div className="md:col-span-2">
                 <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                  Additional Notes / Learning Goals (additional_notes)
+                  {isSi ? 'අමතර සටහන් / ඉගෙනුම් ඉලක්ක' : 'Additional Notes / Learning Goals'}
                 </label>
                 <textarea
                   rows={3}
                   disabled={isSubmitting}
                   value={additionalMessage}
                   onChange={(e) => setAdditionalMessage(e.target.value)}
-                  placeholder="Tell us about your target examination score, any specific topics (e.g. Python, flowcharts), or queries..."
+                  placeholder={
+                    isSi
+                      ? 'ඔබගේ ඉලක්කගත විභාග ලකුණු, විශේෂ විෂය කොටස් (උදා: Python, Flowcharts) හෝ විමසීම් සඳහන් කරන්න...'
+                      : 'Tell us about your target examination score, any specific topics (e.g. Python, flowcharts), or queries...'
+                  }
                   className="w-full p-3 text-xs rounded-xl border border-slate-300 focus:outline-hidden focus:border-[#2563A6] resize-none disabled:bg-slate-50 disabled:text-slate-400"
                 />
               </div>
@@ -717,8 +885,10 @@ NOTIFY pgrst, 'reload schema';`;
 
             {/* Bottom Actions */}
             <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <span className="text-[11px] text-slate-500">
-                🔒 Direct insert into Supabase <code className="bg-slate-100 px-1 py-0.5 rounded text-[10px]">public.registration_requests</code> with RLS.
+              <span className="text-[11px] text-slate-500 text-center sm:text-left">
+                {isSi
+                  ? '🔒 ඔබගේ තොරතුරු ආරක්ෂිතව Supabase දත්ත ගබඩාව වෙත යොමු කෙරේ.'
+                  : '🔒 Direct insert into Supabase public.registration_requests with RLS.'}
               </span>
               <button
                 type="submit"
@@ -728,12 +898,16 @@ NOTIFY pgrst, 'reload schema';`;
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Inserting into Supabase...</span>
+                    <span>
+                      {isSi ? 'ලියාපදිංචිය යොමු වෙමින් පවතී...' : 'Submitting Registration...'}
+                    </span>
                   </>
                 ) : (
                   <>
                     <Send className="w-4 h-4" />
-                    <span>Submit Registration Request</span>
+                    <span>
+                      {isSi ? 'ලියාපදිංචි ඉල්ලීම යොමු කරන්න' : 'Submit Registration Request'}
+                    </span>
                   </>
                 )}
               </button>

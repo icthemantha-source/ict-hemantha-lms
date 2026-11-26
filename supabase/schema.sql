@@ -283,6 +283,7 @@ CREATE TABLE IF NOT EXISTS public.registration_requests (
     parent_name TEXT,
     mobile TEXT NOT NULL,
     parent_mobile TEXT,
+    class_type TEXT NOT NULL,
     email TEXT,
     school_name TEXT,
     current_grade INT NOT NULL,
@@ -304,6 +305,7 @@ ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS student_name T
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS parent_name TEXT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS mobile TEXT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS parent_mobile TEXT;
+ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS class_type TEXT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS email TEXT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS school_name TEXT;
 ALTER TABLE public.registration_requests ADD COLUMN IF NOT EXISTS current_grade INT;

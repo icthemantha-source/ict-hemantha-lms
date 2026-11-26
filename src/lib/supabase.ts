@@ -207,19 +207,20 @@ export function getSupabaseClient(): SupabaseClient | null {
 /**
  * Inserts a student registration request into the Supabase public.registration_requests table.
  * 
- * Required fields saved:
+ * Fields saved:
  * 1. student_name
  * 2. parent_name
  * 3. mobile
- * 4. parent_mobile
+ * 4. class_type
  * 5. email
  * 6. school_name
  * 7. current_grade
  * 8. requested_grade
- * 9. preferred_batch
- * 10. additional_notes
- * 11. status ('pending')
- * 12. created_at (ISO timestamp)
+ * 9. medium
+ * 10. preferred_batch
+ * 11. additional_notes
+ * 12. status ('pending')
+ * 13. created_at (ISO timestamp)
  */
 export async function insertRegistrationRequest(
   payload: SupabaseRegistrationPayload
@@ -253,7 +254,7 @@ export async function insertRegistrationRequest(
     student_name: payload.student_name,
     parent_name: payload.parent_name || null,
     mobile: payload.mobile,
-    parent_mobile: payload.parent_mobile || null,
+    class_type: payload.class_type,
     email: payload.email || null,
     school_name: payload.school_name || null,
     current_grade: String(payload.current_grade),
@@ -318,7 +319,7 @@ export async function insertRegistrationRequest(
     if (isColumnError) {
       return {
         success: false,
-        error: `Supabase Schema Column Error [${error.code || 'PGRST204'}]: ${error.message}.${errDetails}${errHint} Run the SQL migration in Supabase SQL editor to add the missing columns (medium, current_grade, preferred_batch, additional_notes).`,
+        error: `Supabase Schema Column Error [${error.code || 'PGRST204'}]: ${error.message}.${errDetails}${errHint} Run the SQL migration in Supabase SQL editor to add the missing columns (class_type, medium, current_grade, preferred_batch, additional_notes).`,
         errorCode: error.code || 'PGRST204',
         isConfigured: true,
       };

@@ -217,7 +217,7 @@ export interface SupabaseRegistrationPayload {
   student_name: string;
   parent_name?: string | null;
   mobile: string;
-  parent_mobile?: string | null;
+  class_type: string;
   email?: string | null;
   school_name?: string | null;
   current_grade: string | number;
@@ -235,7 +235,8 @@ export interface RegistrationRequest {
   studentFullName: string;
   parentName: string;
   studentMobile: string;
-  parentMobile: string;
+  parentMobile?: string;
+  classType?: string;
   email: string;
   schoolName: string;
   currentGrade: GradeLevel;
@@ -247,6 +248,7 @@ export interface RegistrationRequest {
   // Supabase column aliases
   student_name?: string;
   mobile?: string;
+  class_type?: string;
   preferred_batch?: string;
   additional_notes?: string;
   status: 'pending' | 'approved' | 'rejected' | 'enrolled';

@@ -20,7 +20,7 @@ export const FloatingWhatsApp: React.FC = () => {
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
       {/* Quick Inquiry Popover */}
       {isOpen && (
-        <div className="mb-3 w-80 sm:w-96 rounded-2xl bg-white border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-2">
+        <div className="mb-3 w-[calc(100vw-3rem)] max-w-sm sm:w-96 rounded-2xl bg-white border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-2">
           {/* Header */}
           <div className="bg-[#075E54] text-white p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
